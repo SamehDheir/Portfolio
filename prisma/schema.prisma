@@ -5,12 +5,13 @@ generator client {
 datasource db {
   provider = "postgresql"
 }
+
 model User {
-  id        String    @id @default(uuid())
-  email     String    @unique
-  password  String
-  name      String
-  projects  Project[]
+  id       String    @id @default(uuid())
+  email    String    @unique
+  password String
+  name     String
+  projects Project[]
 }
 
 model Project {
@@ -20,7 +21,7 @@ model Project {
   techStack   String[]
   link        String?
   github      String?
-  image       String?
+  images      String[]
   createdAt   DateTime @default(now())
   authorId    String
   author      User     @relation(fields: [authorId], references: [id])

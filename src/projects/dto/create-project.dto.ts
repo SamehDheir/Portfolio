@@ -1,4 +1,10 @@
-import { IsString, IsNotEmpty, IsOptional, IsUrl, IsArray } from 'class-validator';
+import {
+  IsString,
+  IsNotEmpty,
+  IsOptional,
+  IsUrl,
+  IsArray,
+} from 'class-validator';
 
 export class CreateProjectDto {
   @IsString()
@@ -9,20 +15,21 @@ export class CreateProjectDto {
   @IsNotEmpty()
   description: string;
 
-  @IsUrl()
+  @IsArray()
+  @IsString({ each: true })
   @IsOptional()
-  imageUrl?: string;
+  techStack?: string[];
 
   @IsUrl()
   @IsOptional()
-  liveUrl?: string;
+  link?: string;
 
   @IsUrl()
   @IsOptional()
-  githubUrl?: string;
+  github?: string;
 
   @IsArray()
   @IsString({ each: true })
   @IsOptional()
-  tags?: string[];
+  images?: string[];
 }

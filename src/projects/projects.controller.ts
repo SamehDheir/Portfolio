@@ -8,10 +8,17 @@ import {
   Delete,
   UseGuards,
   Req,
+  UseInterceptors,
+  UploadedFiles,
 } from '@nestjs/common';
 import { ProjectsService } from './projects.service';
 import { CreateProjectDto } from './dto/create-project.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { FilesInterceptor } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
+import { extname } from 'path';
+import * as fs from 'fs';
+
 
 @Controller('projects')
 export class ProjectsController {
@@ -29,18 +36,74 @@ export class ProjectsController {
 
   @UseGuards(JwtAuthGuard)
   @Post()
-  create(@Body() createProjectDto: CreateProjectDto, @Req() req: any) {
-    return this.projectsService.create(createProjectDto, req.user.userId);
+  @UseInterceptors(
+    FilesInterceptor('images', 10, {
+      storage: diskStorage({
+        destination: './uploads',
+        filename: (req, file, cb) => {
+          const uniqueSuffix =
+            Date.now() + '-' + Math.round(Math.random() * 1e9);
+          cb(
+            null,
+            `${file.fieldname}-${uniqueSuffix}${extname(file.originalname)}`,
+          );
+        },
+      }),
+    }),
+  )
+  async create(
+    @Body() createProjectDto: CreateProjectDto,
+    @Req() req: any,
+    @UploadedFiles() files: Express.Multer.File[],
+  ) {
+    const filePaths = files?.map((file) => `/uploads/${file.filename}`) || [];
+
+    const projectData = {
+      ...createProjectDto,
+      images: filePaths,
+    };
+
+    return this.projectsService.create(projectData, req.user.userId);
   }
 
   @UseGuards(JwtAuthGuard)
   @Patch(':id')
-  update(
-    @Param('id') id: string,
-    @Body() updateProjectDto: Partial<CreateProjectDto>,
-  ) {
-    return this.projectsService.update(id, updateProjectDto);
+  @UseInterceptors(
+    FilesInterceptor('images', 10, {
+      storage: diskStorage({
+        destination: './uploads',
+        filename: (req, file, cb) => {
+          const uniqueSuffix =
+            Date.now() + '-' + Math.round(Math.random() * 1e9);
+          cb(
+            null,
+            `${file.fieldname}-${uniqueSuffix}${extname(file.originalname)}`,
+          );
+        },
+      }),
+    }),
+  )
+  async update(
+  @Param('id') id: string,
+  @Body() updateProjectDto: any,
+  @UploadedFiles() files: Express.Multer.File[]
+) {
+  try {
+    await this.projectsService.findOne(id);
+
+    let updateData = { ...updateProjectDto };
+    if (files && files.length > 0) {
+      updateData.images = files.map(file => `/uploads/${file.filename}`);
+    }
+
+    return await this.projectsService.update(id, updateData);
+  } catch (error) {
+    if (files && files.length > 0) {
+      files.forEach(file => fs.unlinkSync(file.path));
+    }
+    throw error; 
   }
+}
 
   @UseGuards(JwtAuthGuard)
   @Delete(':id')
