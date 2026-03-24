@@ -1,0 +1,15 @@
+# Dependencies
+backend/node_modules/
+frontend/node_modules/
+
+# Next.js / NestJS Build folders
+frontend/.next/
+backend/dist/
+
+# Environment variables
+.env
+backend/.env
+frontend/.local.env
+
+# OS files
+.DS_Store
