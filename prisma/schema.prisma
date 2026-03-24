@@ -11,6 +11,7 @@ model User {
   email    String    @unique
   password String
   name     String
+  skills   Skill[]
   projects Project[]
 }
 
@@ -25,6 +26,18 @@ model Project {
   createdAt   DateTime @default(now())
   authorId    String
   author      User     @relation(fields: [authorId], references: [id])
+}
+
+model Skill {
+  id        String   @id @default(uuid())
+  name      String
+  level     Int      @default(0)
+  icon      String?
+  category  String?
+  createdAt DateTime @default(now())
+
+  authorId String
+  author   User   @relation(fields: [authorId], references: [id])
 }
 
 model Post {
