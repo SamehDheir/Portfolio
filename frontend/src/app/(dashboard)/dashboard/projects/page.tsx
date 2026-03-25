@@ -194,7 +194,7 @@ export default function ProjectsPage() {
 
       {/* Modern Form Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xl flex items-center justify-center z-[70] p-4 overflow-y-auto">
+        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xl flex items-start justify-center z-[70] p-4 overflow-y-auto">
           <form onSubmit={handleSubmit(onSubmit)} className="bg-white rounded-[3.5rem] p-12 w-full max-w-5xl shadow-2xl animate-in zoom-in duration-300 relative">
             <div className="flex justify-between items-center mb-12">
               <div>
@@ -291,7 +291,7 @@ export default function ProjectsPage() {
             <div className="w-20 h-20 bg-red-50 rounded-3xl flex items-center justify-center text-red-500 mb-8 mx-auto">
               <MdReportProblem size={48} className="animate-pulse" />
             </div>
-            <h2 className="text-3xl font-black text-slate-900 mb-3 text-center tracking-tight">Destructive Action</h2>
+            <h2 className="text-2xl font-black text-slate-900 mb-3 text-center tracking-tight">Destructive Action</h2>
             <p className="text-slate-500 mb-10 text-center font-medium leading-relaxed">
               You are about to remove <span className="font-black text-red-600">"{selectedProject?.title}"</span>. This will purge all associated media and data.
             </p>
