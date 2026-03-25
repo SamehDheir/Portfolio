@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { CreatePostDto } from './dto/create-post.dto'; 
+import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
 
 @Injectable()
@@ -12,17 +12,23 @@ export class PostsService {
       .toLowerCase()
       .replace(/ /g, '-')
       .replace(/[^\w-]+/g, '');
-      
+
     return this.prisma.post.create({
       data: { ...data, slug, author: { connect: { id: userId } } },
     });
   }
 
-  async findAll() {
+  async findAll(search?: string) {
     return this.prisma.post.findMany({
-      where: { published: true },
+      where: search
+        ? {
+            OR: [
+              { title: { contains: search, mode: 'insensitive' } },
+              { content: { contains: search, mode: 'insensitive' } },
+            ],
+          }
+        : {},
       orderBy: { createdAt: 'desc' },
-      include: { author: { select: { name: true } } }
     });
   }
 
