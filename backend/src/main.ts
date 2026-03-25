@@ -29,6 +29,7 @@ async function bootstrap() {
   app.useStaticAssets(join(__dirname, '..', 'uploads'), {
     prefix: '/uploads/',
   });
+  app.enableCors()
 
   await app.listen(3000);
 }
