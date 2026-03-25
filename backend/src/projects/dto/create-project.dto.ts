@@ -59,7 +59,7 @@ export class CreateProjectDto {
     required: false 
   })
   @IsArray()
-  @IsString({ each: true })
+  // @IsString({ each: true })
   @IsOptional()
   images?: string[];
 }
