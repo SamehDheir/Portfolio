@@ -29,7 +29,7 @@ async getProfile(userId: string) {
   return user;
 }
 
-  async update(
+ async update(
     userId: string,
     dto: UpdateProfileDto,
     file?: Express.Multer.File,
@@ -39,24 +39,23 @@ async getProfile(userId: string) {
 
     let imagePath = user.profileImage;
 
-    // 2. معالجة الصورة الجديدة
     if (file) {
-      // حذف الصورة القديمة إذا لم تكن الافتراضية
-      if (user.profileImage && !user.profileImage.includes('default.png')) {
-        const oldPath = join(process.cwd(), 'public', user.profileImage);
+      if (user.profileImage) {
+        const oldPath = join(process.cwd(), user.profileImage);
+
         if (fs.existsSync(oldPath)) {
           try {
             fs.unlinkSync(oldPath);
+            console.log('Old image deleted successfully:', oldPath);
           } catch (err) {
-            console.error('Error deleting old image:', err);
+            console.error('Error deleting old image file:', err);
           }
         }
       }
+
       imagePath = `/uploads/profiles/${file.filename}`;
     }
 
-    // 3. التحديث في قاعدة البيانات
-    // نستخدم Spread للـ dto ليدعم التحديث الجزئي تلقائياً
     return this.prisma.user.update({
       where: { id: userId },
       data: {
