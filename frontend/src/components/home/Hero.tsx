@@ -1,66 +1,92 @@
 "use client";
 import { motion } from "framer-motion";
 import { useProfile } from "@/hooks/useProfile";
-import { FaGithub, FaLinkedin, FaTerminal } from "react-icons/fa";
+import { FaGithub, FaLinkedin, FaBriefcase, FaCode, FaDownload } from "react-icons/fa";
 
 export default function Hero() {
   const { user } = useProfile();
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center pt-20 overflow-hidden">
-      {/* Background Decor */}
-      <div className="absolute top-20 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-indigo-50 rounded-full blur-[120px] -z-10 opacity-60" />
+    <section className="relative min-h-screen flex items-center justify-center pt-32 lg:pt-20 overflow-hidden bg-white">
+      
+      {/* Background Decorative Elements (Gradients & Blobs) */}
+      <div className="absolute top-20 right-0 w-[500px] h-[500px] bg-sky-100 rounded-full blur-[140px] -z-10 opacity-60" />
+      <div className="absolute bottom-20 left-0 w-[500px] h-[500px] bg-red-100 rounded-full blur-[140px] -z-10 opacity-60" />
 
-      <div className="max-w-6xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+      <div className="max-w-6xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center relative z-10">
+        
+        {/* Text Content Block */}
         <motion.div 
-          initial={{ opacity: 0, x: -30 }}
+          initial={{ opacity: 0, x: -50 }}
           whileInView={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.8 }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+          viewport={{ once: true }}
+          className="space-y-8"
         >
-          <div className="flex items-center gap-2 mb-6">
-            <span className="w-10 h-[2px] bg-indigo-600"></span>
-            <span className="text-indigo-600 font-black text-xs uppercase tracking-[0.3em]">Engineering the Future</span>
+          {/* Status Badge */}
+          <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-sky-100 border border-sky-200">
+            <span className="w-2.5 h-2.5 rounded-full bg-sky-600 animate-pulse"></span>
+            <span className="text-sky-950 font-black text-xs uppercase tracking-[0.2em]">Architecture & Scale</span>
           </div>
-          <h1 className="text-6xl lg:text-8xl font-black text-slate-900 leading-[0.9] tracking-tighter mb-8">
-            Hello, I'm <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-violet-600">
-              {user?.name || "Sameh Dheir"}
+          
+          {/* Main Headline with Gradient Text */}
+          <h1 className="text-6xl lg:text-[100px] font-black tracking-tighter text-slate-900 leading-[0.9]">
+            Building <br /> 
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-600 via-red-500 to-sky-600">
+              Interactive
             </span>
+            <br /> Experiences.
           </h1>
-          <p className="text-xl text-slate-500 font-medium max-w-lg mb-10 leading-relaxed">
-            {user?.bio || "Senior Full-stack Developer specializing in high-performance backends and interactive web experiences."}
+
+          {/* User Bio / Description */}
+          <p className="text-xl text-slate-600 font-medium max-w-lg leading-relaxed">
+            I'm <span className="font-bold text-slate-800">{user?.name}</span>, a {user?.title} specializing in crafting high-performance systems and intuitive interfaces.
           </p>
           
-          <div className="flex flex-wrap gap-6 items-center">
-            <button className="bg-slate-900 text-white px-10 py-5 rounded-2xl font-black text-lg hover:shadow-2xl hover:shadow-indigo-200 hover:-translate-y-1 transition-all">
-              Explore Projects
+          {/* CTA Buttons & Social Links */}
+          <div className="flex flex-wrap gap-5 items-center pt-4">
+            {/* Primary Action Button */}
+            <button className="bg-sky-600 text-white px-10 py-5 rounded-2xl font-black text-lg hover:bg-sky-700 hover:shadow-2xl hover:shadow-sky-200 transition-all transform hover:-translate-y-1 active:scale-95 flex items-center gap-3">
+              <FaCode /> See Projects
             </button>
-            <div className="flex gap-4 text-slate-400">
-              <a href="#" className="hover:text-indigo-600 transition-colors"><FaGithub size={24}/></a>
-              <a href="#" className="hover:text-indigo-600 transition-colors"><FaLinkedin size={24}/></a>
+            
+            {/* Secondary Action Button */}
+            <button className="border-2 border-slate-200 text-slate-600 px-8 py-5 rounded-2xl font-black text-lg hover:bg-slate-50 transition-all flex items-center gap-3">
+              <FaDownload /> Download CV
+            </button>
+            
+            {/* Social Icons Group */}
+            <div className="flex gap-4 text-slate-400 pl-4 border-l-2 border-slate-100">
+              <a href="#" className="hover:text-red-600 transition-colors" aria-label="GitHub"><FaGithub size={24}/></a>
+              <a href="#" className="hover:text-red-600 transition-colors" aria-label="LinkedIn"><FaLinkedin size={24}/></a>
             </div>
           </div>
         </motion.div>
 
-        {/* User Image Area */}
+        {/* User Profile Image Area */}
         <motion.div 
-          initial={{ opacity: 0, scale: 0.9 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          className="relative group"
+          initial={{ opacity: 0, scale: 0.9, rotate: -5 }}
+          whileInView={{ opacity: 1, scale: 1, rotate: 3 }}
+          transition={{ duration: 1, ease: "easeOut", delay: 0.2 }}
+          viewport={{ once: true }}
+          className="relative group lg:justify-self-center"
         >
-          <div className="relative z-10 rounded-[4rem] overflow-hidden border-8 border-white shadow-2xl aspect-square">
+          {/* Styled Image Wrapper */}
+          <div className="relative z-10 rounded-[4rem] overflow-hidden border-[16px] border-white shadow-[0_48px_100px_-20px_rgba(239,68,68,0.15)] aspect-square max-w-md mx-auto bg-slate-50">
             <img 
-              src={user?.profileImage ? `http://localhost:3000${user.profileImage}` : "/placeholder.jpg"} 
-              className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700 scale-110 group-hover:scale-100"
+              src={`http://localhost:3000${user?.profileImage}`} 
+              className="w-full h-full object-cover transition-all duration-1000 group-hover:scale-105 group-hover:grayscale-0"
+              alt={user?.name || "Profile Image"}
             />
           </div>
-          {/* Floating Element */}
-          <div className="absolute -bottom-10 -right-10 bg-white p-6 rounded-3xl shadow-xl border border-slate-50 z-20 flex items-center gap-4 animate-bounce">
-            <div className="w-12 h-12 bg-indigo-600 rounded-2xl flex items-center justify-center text-white">
-              <FaTerminal />
+
+          {/* Floating Experience Badge */}
+          <div className="absolute -bottom-8 -left-8 bg-white p-6 rounded-3xl shadow-xl border border-slate-50 z-20 flex items-center gap-4 animate-bounce">
+            <div className="w-12 h-12 bg-red-600 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-red-200">
+              <FaBriefcase />
             </div>
             <div>
-              <p className="text-[10px] font-black text-slate-400 uppercase">Coding Level</p>
+              <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Industry Expert</p>
               <p className="font-bold text-slate-900 italic">Senior Architect</p>
             </div>
           </div>
