@@ -7,12 +7,16 @@ import { ConfigService } from '@nestjs/config';
 export class ContactService {
   constructor(
     private readonly mailerService: MailerService,
-    private readonly configService: ConfigService, 
+    private readonly configService: ConfigService,
   ) {}
 
-  async sendContactEmail(contactDto: { name: string; email: string; message: string }) {
+  async sendContactEmail(contactDto: {
+    name: string;
+    email: string;
+    message: string;
+  }) {
     await this.mailerService.sendMail({
-      to: this.configService.get<string>('RECEIVER_EMAIL'), 
+      to: this.configService.get<string>('RECEIVER_EMAIL'),
       subject: `New Portfolio Message from ${contactDto.name}`,
       html: `
         <div style="font-family: sans-serif; padding: 20px; border: 1px solid #eee; border-radius: 10px;">

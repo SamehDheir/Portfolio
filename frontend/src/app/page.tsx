@@ -1,4 +1,5 @@
 import BlogSection from "@/components/home/BlogSection";
+import ContactSection from "@/components/home/ContactSection";
 import Hero from "@/components/home/Hero";
 import ProjectsSection from "@/components/home/ProjectsSection";
 import SkillsSection from "@/components/home/SkillsSection";
@@ -10,6 +11,7 @@ export default function HomePage() {
       <ProjectsSection />
       <SkillsSection />
       <BlogSection/>
+      <ContactSection/>
     </div>
   );
 }
