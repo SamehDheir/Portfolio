@@ -18,12 +18,12 @@ async function main() {
 
   console.log('--- Seed started ---');
 
-  const password = 'sameh2134$'; // غيرها لشيء خاص فيك
+  const password = 'sameh2134$';
   const hashedPassword = await bcrypt.hash(password, 10);
 
   // إنشاء مستخدم "سامح"
   const admin = await prisma.user.upsert({
-    where: { email: 'sameh.dheir1@gmail.com' }, // حط إيميلك هون
+    where: { email: 'sameh.dheir1@gmail.com' }, 
     update: {},
     create: {
       email: 'sameh.dheir1@gmail.com',
@@ -35,7 +35,7 @@ async function main() {
   console.log('✅ Admin account created:', admin.email);
 
   await prisma.$disconnect();
-  await pool.end(); // إغلاق الـ pool كمان
+  await pool.end();
 }
 
 main()
