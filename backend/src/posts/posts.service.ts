@@ -33,7 +33,20 @@ export class PostsService {
   }
 
   async findBySlug(slug: string) {
-    const post = await this.prisma.post.findUnique({ where: { slug } });
+    const post = await this.prisma.post.findUnique({
+      where: { slug },
+      include: {
+        author: {
+          select: {
+            id: true,
+            name: true,
+            email: true, 
+            title: true,
+            profileImage: true, 
+          },
+        },
+      },
+    });
     if (!post) throw new NotFoundException('The article does not exist');
     return post;
   }
