@@ -83,7 +83,7 @@ export default function ProfilePage() {
           <div className="relative w-48 h-48 mx-auto group mb-6 overflow-hidden aspect-square rounded-[3rem] bg-slate-100 border-4 border-dashed border-slate-200 hover:border-indigo-300 transition-all cursor-pointer">
             <img
               src={preview || `http://localhost:3000${user?.profileImage}`}
-              className="w-full h-full object-cover grayscale hover:grayscale-0 group-hover:blur-[2px] transition-all"
+              className="w-full h-full object-cover  group-hover:blur-[2px] transition-all"
               alt="Profile"
             />
             <label className="absolute inset-0 flex flex-col gap-2 items-center justify-center bg-slate-900/60 opacity-0 group-hover:opacity-100 rounded-[3rem] cursor-pointer transition-all">
