@@ -10,6 +10,7 @@ import { ProfileModule } from './profile/profile.module';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { ContactModule } from './contact/contact.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ChatModule } from './chat/chat.module';
 
 @Module({
   imports: [
@@ -41,6 +42,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
     PostsModule,
     ProfileModule,
     ContactModule,
+    ChatModule,
   ],
   controllers: [AppController],
   providers: [AppService],
