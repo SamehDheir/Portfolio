@@ -1,11 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
+import api from "@/lib/axios"; // تأكد من استخدام المسار اللي عرفت فيه الـ instance
 
 export const useSkills = () => {
   return useQuery({
     queryKey: ["skills"],
     queryFn: async () => {
-      const { data } = await axios.get("http://localhost:3000/api/v1/skills");
+      const { data } = await api.get("/skills");
       return data;
     },
   });

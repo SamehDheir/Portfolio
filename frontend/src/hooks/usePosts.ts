@@ -1,12 +1,11 @@
-// hooks/usePosts.ts
 import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
+import api from "@/lib/axios";
 
 export const usePosts = () => {
   return useQuery({
     queryKey: ["posts"],
     queryFn: async () => {
-      const { data } = await axios.get("http://localhost:3000/api/v1/posts");
+      const { data } = await api.get("/posts"); 
       return data;
     },
     select: (posts: any[]) => posts.filter((post) => post.published === true),
