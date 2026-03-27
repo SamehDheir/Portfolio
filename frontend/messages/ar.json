@@ -1,0 +1,81 @@
+{
+  "Navbar": {
+    "home": "الرئيسية",
+    "projects": "المشاريع",
+    "skills": "المهارات",
+    "blog": "المدونة",
+    "lang": "العربية",
+    "contact": "تواصل معي"
+  },
+  "Hero": {
+    "badge": "بناء الأنظمة وتوسيعها",
+    "titleStart": "بناء",
+    "titleMiddle": "تجارب رقمية",
+    "titleEnd": "تفاعلية",
+    "description": "أنا سامح ضهير، مطور ويب متكامل (Full Stack) متخصص في بناء البنى التحتية البرمجية القوية وواجهات المستخدم السلسة",
+    "seeProjects": "عرض المشاريع",
+    "downloadCV": "السيرة الذاتية",
+    "expertBadge": "خبير تقني",
+    "expertTitle": "مطور أول أنظمة"
+  },
+  "Projects": {
+    "badge": "حلول برمجية مثبتة",
+    "title": "أبرز",
+    "titleAccent": "الأعمال",
+    "subtitle": "مجموعة مختارة من بنى الأنظمة الخلفية والمنصات المتكاملة التي قمت بتطويرها",
+    "exploreGithub": "استكشف المزيد على GitHub"
+  },
+  "Skills": {
+    "badge": "الخبرات التقنية",
+    "title": "المهارات",
+    "titleAccent": "البرمجية",
+    "backend": "الخلفية (Backend)",
+    "frontend": "الأمامية (Frontend)",
+    "devops": "العمليات (DevOps)",
+    "tools": "الأدوات",
+    "noSkills": "لم تضف مهارات بعد"
+  },
+  "Blog": {
+    "badge": "قاعدة المعرفة",
+    "title": "آخر",
+    "titleAccent": "المقالات",
+    "viewArchive": "الأرشيف",
+    "continueReading": "تابع القراءة"
+  },
+  "BlogContent": {
+    "loading": "جاري تحميل المقال",
+    "notFound": "المقال غير موجود",
+    "backToFeed": "العودة للمقالات",
+    "writtenBy": "كُتب بواسطة",
+    "followInsights": "تابع المستجدات"
+  },
+  "Archive": {
+    "title": "الأرشيف",
+    "subtitle": "تدوينات تقنية، هندسة أنظمة، وسجلات التطوير",
+    "searchPlaceholder": "ابحث بالعنوان",
+    "allCategories": "الكل",
+    "readMore": "اقرأ المزيد"
+  },
+  "Contact": {
+    "badge": "تواصل معي",
+    "titleStart": "لنصنع",
+    "titleMiddle": "شيئاً",
+    "titleAccent": "عظيماً",
+    "description": "لديك مشروع في بالك أو ترغب في الحديث عن هندسة الأنظمة؟ بريدي متاح دائماً",
+    "labelName": "الأسم",
+    "placeholderName": "سامح ضهير",
+    "labelEmail": "البريد الإلكتروني",
+    "labelMessage": "الرسالة",
+    "placeholderMessage": "حدثني عن مشروعك",
+    "btnSend": "إرسال الرسالة",
+    "btnLoading": "جاري الإرسال",
+    "btnSuccess": "تم الإرسال!",
+    "successMessage": "تم إرسال الرسالة بنجاح! سأتواصل معك قريباً",
+    "errorMessage": "فشل إرسال الرسالة يرجى المحاولة مرة أخرى"
+  },
+  "Footer": {
+    "rights": "جميع الحقوق محفوظة",
+    "tagline": "هندسة البرمجيات المتكاملة ودمج الذكاء الاصطناعي",
+    "admin": "لوحة التحكم"
+  }
+}

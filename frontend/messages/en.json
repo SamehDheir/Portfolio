@@ -1,0 +1,81 @@
+{
+  "Navbar": {
+    "home": "Home",
+    "projects": "Projects",
+    "skills": "Skills",
+    "blog": "Blog",
+     "lang": "English",
+    "contact": "CONTACT ME"
+  },
+  "Hero": {
+    "badge": "ARCHITECTURE & SCALE",
+    "titleStart": "Building",
+    "titleMiddle": "Interactive",
+    "titleEnd": "Experiences",
+    "description": "I'm Sameh Dheir, a Full Stack Web Developer focused on building robust backend architectures and seamless user interfaces",
+    "seeProjects": "SEE PROJECTS",
+    "downloadCV": "CV",
+    "expertBadge": "INDUSTRY EXPERT",
+    "expertTitle": "Senior Architect"
+  },
+  "Projects": {
+    "badge": "PROVEN SOLUTIONS",
+    "title": "Featured",
+    "titleAccent": "Work",
+    "subtitle": "A curated selection of backend architectures and full-stack platforms I've engineered",
+    "exploreGithub": "Explore More on GitHub"
+  },
+  "Skills": {
+    "badge": "EXPERTISE",
+    "title": "Technical",
+    "titleAccent": "Stack",
+    "backend": "Backend",
+    "frontend": "Frontend",
+    "devops": "DevOps",
+    "tools": "Tools",
+    "noSkills": "No skills added yet"
+  },
+  "Blog": {
+    "badge": "KNOWLEDGE BASE",
+    "title": "Latest",
+    "titleAccent": "Insights",
+    "viewArchive": "View Archive",
+    "continueReading": "Continue Reading"
+  },
+  "BlogContent": {
+    "loading": "Loading Article",
+    "notFound": "Post not found",
+    "backToFeed": "Back to Feed",
+    "writtenBy": "Written By",
+    "followInsights": "Follow Insights"
+  },
+  "Archive": {
+    "title": "Archive",
+    "subtitle": "Technical writings, architectures, and dev-logs",
+    "searchPlaceholder": "Filter by title",
+    "allCategories": "All",
+    "readMore": "Read Depth"
+  },
+  "Contact": {
+    "badge": "GET IN TOUCH",
+    "titleStart": "Let's Build",
+    "titleMiddle": "Something",
+    "titleAccent": "Great",
+    "description": "Have a project in mind or just want to chat about system architecture? My inbox is always open",
+    "labelName": "Your Name",
+    "placeholderName": "John Doe",
+    "labelEmail": "Email Address",
+    "labelMessage": "Message",
+    "placeholderMessage": "Tell me about your project",
+    "btnSend": "Send Message",
+    "btnLoading": "Sending",
+    "btnSuccess": "Message Sent!",
+    "successMessage": "Message sent! I'll get back to you soon",
+    "errorMessage": "Failed to send message Please try again"
+  },
+  "Footer": {
+    "rights": "ALL RIGHTS RESERVED",
+    "tagline": "FULL-STACK ARCHITECTURE & AI INTEGRATION",
+    "admin": "ADMIN"
+  }
+}
