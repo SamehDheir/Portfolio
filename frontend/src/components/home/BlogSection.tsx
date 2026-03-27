@@ -1,37 +1,40 @@
 "use client";
-import { motion } from "framer-motion";
+import { motion, Variants } from "framer-motion"; 
 import { usePosts } from "@/hooks/usePosts";
 import Link from "next/link";
 import { FaArrowRight, FaRegCalendarAlt, FaHashtag } from "react-icons/fa";
 
-// Animation Variants for Parent Container
-const containerVariants = {
+const containerVariants: Variants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.2, // Appearance of cards one after another
+      staggerChildren: 0.2,
     },
   },
 };
 
-// Animation Variants for Individual Cards
-const itemVariants = {
+const itemVariants: Variants = {
   hidden: { opacity: 0, y: 30, scale: 0.95 },
   visible: {
     opacity: 1,
     y: 0,
     scale: 1,
-    transition: { type: "spring", stiffness: 100, damping: 15 },
+    transition: { 
+      type: "spring", 
+      stiffness: 100, 
+      damping: 15 
+    },
   },
 };
 
 export default function BlogSection() {
   const { data: posts, isLoading } = usePosts();
-  const featuredPosts = posts?.slice(0, 3);
+  
+  const featuredPosts = (posts || []).slice(0, 3);
 
   return (
-    <section id="blog" className="py-32 bg-[#FBFDFF] overflow-hidden">
+    <section id="blog" className="py-10 bg-[#FBFDFF] overflow-hidden">
       <div className="max-w-6xl mx-auto px-6">
         {/* Animated Header */}
         <motion.div
@@ -81,15 +84,14 @@ export default function BlogSection() {
             viewport={{ once: true, margin: "-100px" }}
             className="grid grid-cols-1 md:grid-cols-3 gap-8"
           >
-            {featuredPosts?.length > 0 ? (
+            {featuredPosts.length > 0 ? (
               featuredPosts.map((post: any) => (
                 <motion.article
                   key={post.id}
                   variants={itemVariants}
-                  whileHover={{ y: -10 }} // Float up on hover
+                  whileHover={{ y: -10 }}
                   className="group flex flex-col bg-white p-6 rounded-[2.5rem] border border-slate-100 hover:border-sky-200 hover:shadow-[0_20px_50px_rgba(14,165,233,0.1)] transition-all duration-500"
                 >
-                  {/* Interactive Image Container */}
                   <div className="relative aspect-[16/11] rounded-3xl overflow-hidden mb-6 bg-slate-50">
                     <motion.img
                       whileHover={{ scale: 1.1 }}
@@ -107,7 +109,6 @@ export default function BlogSection() {
                     </div>
                   </div>
 
-                  {/* Text Details */}
                   <div className="flex flex-col flex-1">
                     <div className="flex items-center gap-2 text-slate-400 text-xs font-bold mb-3 tracking-widest uppercase">
                       <FaRegCalendarAlt className="text-red-400" />

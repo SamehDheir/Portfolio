@@ -48,7 +48,6 @@ export default function DashboardPage() {
   const totalProjects = projects?.length || 0;
   const totalSkills = skills?.length || 0;
 
-  // تحديد المهارة الأعلى (مثلاً بناءً على مستوى الخبرة إذا كان موجوداً)
   const topSkill = skills?.[0]?.name || "N/A";
 
   const stats = [
@@ -155,9 +154,9 @@ export default function DashboardPage() {
                 You currently have <span className="text-white font-bold">{totalProjects} projects</span> showcasing your NestJS & PostgreSQL expertise. Ready to add more?
               </p>
             </div>
-            <button className="mt-8 bg-indigo-600 text-white w-full py-4 rounded-2xl font-bold hover:bg-indigo-700 transition-all shadow-lg active:scale-95 border border-indigo-500">
+            <a href="dashboard/projects" className="mt-8 bg-indigo-600 p-3 text-center border-0 text-white w-full py-4 rounded-2xl font-bold hover:bg-indigo-700 transition-all shadow-lg active:scale-95 border border-indigo-500">
               Add New Project
-            </button>
+            </a>
           </div>
           {/* Subtle background pattern */}
           <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">

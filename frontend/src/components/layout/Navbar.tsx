@@ -16,19 +16,19 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 50);
+    const handleScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   return (
-    <nav className={`fixed w-full z-[100] transition-all duration-300 ${
+    <nav className={`fixed w-full z-[100] transition-all duration-500 ${
       scrolled ? "top-4 px-4" : "top-0 px-0"
     }`}>
-      <div className={`max-w-6xl mx-auto transition-all duration-300 ${
+      <div className={`max-w-6xl mx-auto transition-all duration-500 ${
         scrolled 
-        ? "bg-white/80 backdrop-blur-md border border-slate-200/50 shadow-lg rounded-[2rem] px-8 py-3" 
-        : "bg-transparent py-6 px-6"
+        ? "bg-white/90 backdrop-blur-xl border border-slate-200/60 shadow-[0_8px_30px_rgb(0,0,0,0.04)] rounded-[2.5rem] px-8 py-3" 
+        : "bg-white/50 backdrop-blur-sm border-b border-slate-100 py-5 px-8"
       }`}>
         <div className="flex items-center justify-between">
           {/* Logo */}
@@ -42,22 +42,22 @@ export default function Navbar() {
               <Link 
                 key={link.name} 
                 href={link.href} 
-                className="text-sm font-bold text-slate-500 hover:text-indigo-600 transition-colors"
+                className="text-sm font-bold text-slate-600 hover:text-indigo-600 transition-colors"
               >
                 {link.name}
               </Link>
             ))}
             <Link 
               href="#contact" 
-              className="bg-slate-900 text-white px-6 py-2.5 rounded-xl font-bold text-sm hover:bg-indigo-600 transition-all active:scale-95"
+              className="bg-slate-900 text-white px-7 py-2.5 rounded-2xl font-bold text-xs uppercase tracking-widest hover:bg-indigo-600 transition-all active:scale-95 shadow-lg shadow-slate-200"
             >
               Contact Me
             </Link>
           </div>
 
           {/* Mobile Toggle */}
-          <button className="md:hidden text-slate-900" onClick={() => setIsOpen(!isOpen)}>
-            {isOpen ? <X size={28} /> : <Menu size={28} />}
+          <button className="md:hidden text-slate-900 p-2" onClick={() => setIsOpen(!isOpen)}>
+            {isOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
         </div>
       </div>
@@ -66,17 +66,29 @@ export default function Navbar() {
       <AnimatePresence>
         {isOpen && (
           <motion.div 
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            className="absolute top-20 left-4 right-4 bg-white border border-slate-100 rounded-3xl shadow-2xl p-6 md:hidden z-50"
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.95 }}
+            className="absolute top-24 left-4 right-4 bg-white/95 backdrop-blur-2xl border border-slate-100 rounded-[2.5rem] shadow-2xl p-8 md:hidden z-50"
           >
-            <div className="flex flex-col gap-4 text-center">
+            <div className="flex flex-col gap-6 text-center">
               {navLinks.map((link) => (
-                <Link key={link.name} href={link.href} onClick={() => setIsOpen(false)} className="text-lg font-bold text-slate-600 py-2 border-b border-slate-50 last:border-0">
+                <Link 
+                  key={link.name} 
+                  href={link.href} 
+                  onClick={() => setIsOpen(false)} 
+                  className="text-xl font-black text-slate-900 hover:text-indigo-600 transition-colors"
+                >
                   {link.name}
                 </Link>
               ))}
+              <Link 
+                href="#contact" 
+                onClick={() => setIsOpen(false)}
+                className="bg-indigo-600 text-white py-4 rounded-2xl font-black uppercase tracking-widest"
+              >
+                Contact Me
+              </Link>
             </div>
           </motion.div>
         )}

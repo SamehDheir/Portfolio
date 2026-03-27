@@ -14,7 +14,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 @Module({
   imports: [
     ConfigModule.forRoot({
-      isGlobal: true, // متاح في كل مكان دون الحاجة لعمل Import متكرر
+      isGlobal: true,
     }),
 
     MailerModule.forRootAsync({
