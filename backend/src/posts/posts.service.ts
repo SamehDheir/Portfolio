@@ -1,33 +1,60 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
+import slugify from 'slugify'; 
 
 @Injectable()
 export class PostsService {
   constructor(private prisma: PrismaService) {}
 
+  private async generateUniqueSlug(title: string): Promise<string> {
+    const baseSlug = slugify(title, { lower: true, strict: true });
+    let slug = baseSlug;
+    let counter = 1;
+
+    while (await this.prisma.post.findUnique({ where: { slug } })) {
+      slug = `${baseSlug}-${counter}`;
+      counter++;
+    }
+    return slug;
+  }
+
   async create(data: CreatePostDto, userId: string) {
-    const slug = data.title
-      .toLowerCase()
-      .replace(/ /g, '-')
-      .replace(/[^\w-]+/g, '');
+    const slug = await this.generateUniqueSlug(data.title);
 
     return this.prisma.post.create({
-      data: { ...data, slug, author: { connect: { id: userId } } },
+      data: {
+        title: data.title,
+        content: data.content,
+        category: data.category, 
+        tags: data.tags || [],
+        published: data.published ?? false,
+        coverImage: data.coverImage,
+        slug,
+        author: { connect: { id: userId } },
+      },
     });
   }
 
-  async findAll(search?: string) {
+  async findAll(search?: string, category?: string) {
     return this.prisma.post.findMany({
-      where: search
-        ? {
+      where: {
+        AND: [
+          search ? {
             OR: [
               { title: { contains: search, mode: 'insensitive' } },
               { content: { contains: search, mode: 'insensitive' } },
             ],
-          }
-        : {},
+          } : {},
+          category ? { category: category as any } : {},
+        ]
+      },
+      include: {
+        author: {
+          select: { name: true, profileImage: true }
+        }
+      },
       orderBy: { createdAt: 'desc' },
     });
   }
@@ -40,9 +67,9 @@ export class PostsService {
           select: {
             id: true,
             name: true,
-            email: true, 
+            email: true,
             title: true,
-            profileImage: true, 
+            profileImage: true,
           },
         },
       },
@@ -52,20 +79,27 @@ export class PostsService {
   }
 
   async update(id: string, updateData: UpdatePostDto) {
-    if (updateData.title) {
-      updateData.slug = updateData.title
-        .toLowerCase()
-        .replace(/ /g, '-')
-        .replace(/[^\w-]+/g, '');
+    const existingPost = await this.prisma.post.findUnique({ where: { id } });
+    if (!existingPost) throw new NotFoundException('Post not found');
+
+    if (updateData.title && updateData.title !== existingPost.title) {
+      updateData.slug = await this.generateUniqueSlug(updateData.title);
     }
 
     return this.prisma.post.update({
       where: { id },
-      data: updateData,
+      data: {
+        ...updateData,
+        tags: updateData.tags || existingPost.tags,
+      },
     });
   }
 
   async remove(id: string) {
-    return this.prisma.post.delete({ where: { id } });
+    try {
+      return await this.prisma.post.delete({ where: { id } });
+    } catch (error) {
+      throw new NotFoundException('Post not found or already deleted');
+    }
   }
 }

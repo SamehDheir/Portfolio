@@ -1,6 +1,14 @@
-import { IsString, IsNotEmpty, IsOptional, IsBoolean } from 'class-validator';
+import { 
+  IsString, 
+  IsNotEmpty, 
+  IsOptional, 
+  IsBoolean, 
+  IsEnum, 
+  IsArray 
+} from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
+import { Category } from '@prisma/client';
 
 export class CreatePostDto {
   @ApiProperty({
@@ -12,8 +20,7 @@ export class CreatePostDto {
   title: string;
 
   @ApiProperty({
-    example:
-      'In this post, we will explore how to build scalable microservices...',
+    example: 'In this post, we will explore how to build scalable microservices...',
     description: 'The main body of the post (supports Markdown text)',
   })
   @IsString()
@@ -22,30 +29,44 @@ export class CreatePostDto {
 
   @ApiProperty({
     example: 'mastering-nestjs-microservices',
-    description:
-      'URL-friendly version of the title (generated automatically if not provided)',
     required: false,
   })
   @IsOptional()
+  @IsString()
   slug?: string;
 
   @ApiProperty({
     example: 'https://your-storage.com/images/nest-cover.jpg',
-    description: 'Main cover image URL for the post',
     required: false,
   })
   @IsString()
   @IsOptional()
-  coverImg?: string;
+  coverImage?: string;
 
-  @ApiProperty({ example: 'Backend', description: 'Post category' })
-  @IsString()
+  @ApiProperty({ 
+    enum: Category, 
+    example: 'Backend' 
+  })
+  @IsEnum(Category, { message: 'Category must be: Backend, Frontend, AI, DevOps, or Others' })
   @IsNotEmpty()
-  category: string;
+  category: Category;
+
+  @ApiProperty({
+    example: ['NestJS', 'Microservices', 'Prisma'],
+    description: 'Array of tags for the post',
+    required: false,
+  })
+  @IsArray()
+  @IsString({ each: true }) 
+  @IsOptional()
+  @Transform(({ value }) => {
+    if (typeof value === 'string') return value.split(',').map(t => t.trim());
+    return value;
+  })
+  tags?: string[];
 
   @ApiProperty({
     example: true,
-    description: 'Status of the post (true for public, false for draft)',
     default: false,
     required: false,
   })
