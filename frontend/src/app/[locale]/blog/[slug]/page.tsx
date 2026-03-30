@@ -20,7 +20,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     const siteName = isAr ? "سامح ضهير" : "Sameh Dheir";
     const defaultTitle = isAr ? "مدونة تقنية" : "Technical Blog";
 
-    // تحسين النصوص المعروضة في محركات البحث بناءً على اللغة
     const title = post.title || defaultTitle;
     const description = post.description || (isAr 
         ? "مقالات تقنية في هندسة البرمجيات وتطوير الويب والذكاء الاصطناعي بواسطة سامح ضهير" 
@@ -39,7 +38,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       openGraph: {
         title: title,
         description: description,
-        url: `https://sameh.dev/${locale}/blog/${slug}`, // يفضل وضع الـ domain الأساسي هنا
+        url: `https://sameh.dev/${locale}/blog/${slug}`,
         siteName: siteName,
         images: post.coverImg ? [
           {

@@ -12,7 +12,7 @@ export default function ProjectsSection() {
   const { data: projects, isLoading } = useProjects();
 
   return (
-    <section id="projects" className="py-10 bg-[#FBFDFF] overflow-hidden text-start">
+    <section id="projects" className="py-24 bg-transparent transition-colors duration-500 overflow-hidden text-start">
       <div className="max-w-6xl mx-auto px-6">
         
         {/* Section Header */}
@@ -24,11 +24,11 @@ export default function ProjectsSection() {
                 {t("badge")}
               </span>
             </div>
-            <h2 className="text-5xl lg:text-7xl font-black text-slate-900 tracking-tighter">
-              {t("title")} <span className="text-sky-600">{t("titleAccent")}</span>
+            <h2 className="text-5xl lg:text-7xl font-black text-slate-900 dark:text-white tracking-tighter">
+              {t("title")} <span className="text-sky-600 dark:text-sky-400">{t("titleAccent")}</span>
             </h2>
           </div>
-          <p className="text-slate-500 font-medium max-w-sm text-balance border-l-2 border-slate-100 pl-4 rtl:border-l-0 rtl:border-r-2 rtl:pl-0 rtl:pr-4">
+          <p className="text-slate-500 dark:text-slate-400 font-medium max-w-sm text-balance border-l-2 border-slate-100 dark:border-slate-800 pl-4 rtl:border-l-0 rtl:border-r-2 rtl:pl-0 rtl:pr-4">
             {t("subtitle")}
           </p>
         </div>
@@ -47,17 +47,18 @@ export default function ProjectsSection() {
                 viewport={{ once: true }}
                 className="group relative"
               >
-                <div className="relative aspect-[16/10] rounded-[2.5rem] overflow-hidden border border-slate-100 shadow-sm bg-white">
+                {/* Project card*/}
+                <div className="relative aspect-[16/10] rounded-[2.5rem] overflow-hidden border border-slate-100 dark:border-slate-800 shadow-sm bg-white dark:bg-slate-900">
                   <img
                     src={project.images?.[0] ? `http://localhost:3000${project.images[0]}` : "/project-placeholder.jpg"}
                     alt={project.title}
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 group-hover:rotate-1"
                   />
-                  <div className="absolute inset-0 bg-slate-900/40 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-center justify-center gap-4">
-                    <a href={project.github} target="_blank" className="p-4 bg-white rounded-2xl text-slate-900 hover:bg-sky-600 hover:text-white transition-all transform hover:-translate-y-2">
+                  <div className="absolute inset-0 bg-slate-900/60 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-center justify-center gap-4 backdrop-blur-sm">
+                    <a href={project.github} target="_blank" className="p-4 bg-white dark:bg-slate-800 rounded-2xl text-slate-900 dark:text-white hover:bg-sky-600 hover:text-white transition-all transform hover:-translate-y-2 shadow-xl">
                       <FaGithub size={24} />
                     </a>
-                    <a href={project.link} target="_blank" className="p-4 bg-white rounded-2xl text-slate-900 hover:bg-red-500 hover:text-white transition-all transform hover:-translate-y-2">
+                    <a href={project.link} target="_blank" className="p-4 bg-white dark:bg-slate-800 rounded-2xl text-slate-900 dark:text-white hover:bg-red-500 hover:text-white transition-all transform hover:-translate-y-2 shadow-xl">
                       <FaExternalLinkAlt size={22} />
                     </a>
                   </div>
@@ -66,15 +67,15 @@ export default function ProjectsSection() {
                 <div className="mt-8 px-2">
                   <div className="flex flex-wrap gap-2 mb-4">
                     {project.techStack?.map((tech: string) => (
-                      <span key={tech} className="px-3 py-1 bg-slate-100 text-slate-500 text-[10px] font-black uppercase tracking-wider rounded-full">
+                      <span key={tech} className="px-3 py-1 bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 text-[10px] font-black uppercase tracking-wider rounded-full border border-transparent dark:border-slate-700">
                         {tech}
                       </span>
                     ))}
                   </div>
-                  <h3 className="text-2xl font-black text-slate-900 group-hover:text-sky-600 transition-colors">
+                  <h3 className="text-2xl font-black text-slate-900 dark:text-white group-hover:text-sky-600 dark:group-hover:text-sky-400 transition-colors">
                     {project.title}
                   </h3>
-                  <p className="text-slate-500 mt-2 font-medium line-clamp-2">
+                  <p className="text-slate-500 dark:text-slate-400 mt-2 font-medium line-clamp-2">
                     {project.description}
                   </p>
                 </div>
@@ -88,9 +89,9 @@ export default function ProjectsSection() {
           <a 
             href="https://github.com/SamehDheir" 
             target="_blank"  
-            className="inline-flex items-center gap-3 px-8 py-4 bg-white border-2 border-slate-100 rounded-2xl font-black text-slate-800 hover:bg-slate-50 hover:border-sky-200 transition-all group"
+            className="inline-flex items-center gap-3 px-8 py-4 bg-white dark:bg-slate-900 border-2 border-slate-100 dark:border-slate-800 rounded-2xl font-black text-slate-800 dark:text-white hover:bg-slate-50 dark:hover:bg-slate-800 hover:border-sky-200 dark:hover:border-sky-900 transition-all group shadow-sm"
           >
-            <FaCode className="group-hover:rotate-12 transition-transform" />
+            <FaCode className="group-hover:rotate-12 transition-transform text-sky-600" />
             {t("exploreGithub")}
           </a>
         </div>
