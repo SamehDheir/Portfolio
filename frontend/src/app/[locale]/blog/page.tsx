@@ -117,7 +117,7 @@ export default function BlogArchivePage() {
                     </h3>
                   </Link>
                   <p className={`text-slate-400 font-medium line-clamp-2 leading-relaxed mb-8 ${isAr ? 'text-[15px]' : 'text-sm'}`}>
-                    {post.description || (isAr ? "تعمق في هندسة الأنظمة وأنماط الويب الحديثة." : "Deep dive into system architecture...")}
+                    {post.description || (isAr ? "تعمق في هندسة الأنظمة وأنماط الويب الحديثة" : "Deep dive into system architecture...")}
                   </p>
                 </div>
 

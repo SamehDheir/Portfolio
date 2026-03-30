@@ -8,11 +8,11 @@ import { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Sameh Dheir | Senior Full-Stack Developer & Software Architect",
-  description: "Specializing in building high-performance systems, AI-driven platforms, and scalable backend architectures using NestJS, Node.js, and Python.",
+  description: "Specializing in building high-performance systems, AI-driven platforms, and scalable backend architectures using NestJS, Node.js, and Python",
   keywords: ["Sameh Dheir", "Full Stack Developer", "Backend Engineer", "NestJS Expert", "Software Architect", "Portfolio"],
   openGraph: {
     title: "Sameh Dheir | Portfolio",
-    description: "Architecture & Scale - Building Interactive Experiences.",
+    description: "Architecture & Scale - Building Interactive Experiences",
     url: "https://sameh.dev",
     siteName: "Sameh Dheir Portfolio",
     images: [
@@ -29,7 +29,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Sameh Dheir | Senior Full-Stack Developer",
-    description: "Building robust backend architectures and seamless user interfaces.",
+    description: "Building robust backend architectures and seamless user interfaces",
     images: ["/og-image.png"],
   },
 };

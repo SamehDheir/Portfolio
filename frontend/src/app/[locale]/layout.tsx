@@ -1,15 +1,14 @@
-"use client";
-
 import { Geist, Geist_Mono } from "next/font/google";
 import "../globals.css";
 import QueryProvider from "@/providers/QueryProvider";
 import { Toaster } from "react-hot-toast";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
-import { usePathname, useParams } from "next/navigation";
 import ChatAI from "@/components/layout/ChatAI";
-import { NextIntlClientProvider, AbstractIntlMessages } from "next-intl";
-import { useState, useEffect } from "react";
+import { NextIntlClientProvider } from "next-intl";
+import { getMessages } from "next-intl/server";
+import { notFound } from "next/navigation";
+import { setRequestLocale } from "next-intl/server";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -21,32 +20,19 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
-}: Readonly<{
+  params,
+}: {
   children: React.ReactNode;
-}>) {
-  const pathname = usePathname();
-  const params = useParams();
-  const locale = (params?.locale as string) || "en";
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
 
-  const [messages, setMessages] = useState<AbstractIntlMessages | null>(null);
-
-  useEffect(() => {
-    import(`../../../messages/${locale}.json`).then((m) => {
-      setMessages(m.default);
-    });
-  }, [locale]);
-
-  const isDashboard =
-    pathname.startsWith(`/${locale}/dashboard`) ||
-    pathname.startsWith("/dashboard");
-  const isLoginPage = pathname === `/${locale}/login` || pathname === "/login";
-  const hideLayout = isDashboard || isLoginPage;
+  setRequestLocale(locale);
+  const messages = await getMessages();
 
   const direction = locale === "ar" ? "rtl" : "ltr";
-
-  if (!messages) return null;
 
   return (
     <html lang={locale} dir={direction} className="scroll-smooth">
@@ -55,14 +41,11 @@ export default function RootLayout({
       >
         <NextIntlClientProvider locale={locale} messages={messages}>
           <QueryProvider>
-            {!hideLayout && <Navbar />}
+            <Navbar />
 
-            <main className={!hideLayout ? "min-h-screen" : ""}>
-              {children}
-            </main>
+            <main className="min-h-screen">{children}</main>
 
-            {!hideLayout && <Footer />}
-
+            <Footer />
             <Toaster position="top-center" reverseOrder={false} />
             <ChatAI />
           </QueryProvider>

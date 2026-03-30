@@ -148,7 +148,7 @@ export default function ProjectsPage() {
             <MdOutlineGridView className="text-indigo-600" size={40} /> Showcase
           </h1>
           <p className="text-slate-500 mt-2 font-medium italic">
-            "Every project is a story of architecture & logic." 🚀
+            "Every project is a story of architecture & logic" 🚀
           </p>
         </div>
 

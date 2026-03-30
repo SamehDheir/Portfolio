@@ -36,7 +36,7 @@ export default function ChatAI() {
       const data = await chatService.sendMessage(input);
       setMessages((prev) => [...prev, { role: "assistant", content: data.text }]);
     } catch (error) {
-      setMessages((prev) => [...prev, { role: "assistant", content: "Service unavailable. / الخدمة غير متوفرة حالياً." }]);
+      setMessages((prev) => [...prev, { role: "assistant", content: "Service unavailable. / الخدمة غير متوفرة حالياً" }]);
     } finally {
       setIsLoading(false);
     }

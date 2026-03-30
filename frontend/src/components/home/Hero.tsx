@@ -1,19 +1,20 @@
 "use client";
 import { motion } from "framer-motion";
 import { useProfile } from "@/hooks/useProfile";
-import { useTranslations } from "next-intl"; 
-import { 
-  FaGithub, 
-  FaLinkedin, 
-  FaBriefcase, 
-  FaCode, 
-  FaDownload 
+import { useTranslations } from "next-intl";
+import {
+  FaGithub,
+  FaLinkedin,
+  FaBriefcase,
+  FaCode,
+  FaDownload,
 } from "react-icons/fa";
 
 export default function Hero() {
   const { user } = useProfile();
-  const t = useTranslations("Hero"); 
-
+  const t = useTranslations("Hero");
+  
+  console.log("Current Translation Badge:", t("badge"));
   return (
     <section className="relative min-h-screen flex items-center justify-center pt-24 pb-12 overflow-hidden bg-white">
       {/* Background Decorative Elements */}
@@ -21,7 +22,6 @@ export default function Hero() {
       <div className="absolute bottom-[-10%] left-[-5%] w-[600px] h-[600px] bg-red-50 rounded-full blur-[120px] -z-10 opacity-50" />
 
       <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-4 items-center relative z-10">
-        
         {/* Left Content: Text & CTA */}
         <motion.div
           initial={{ opacity: 0, x: -30 }}
@@ -30,7 +30,7 @@ export default function Hero() {
           className="space-y-10 order-2 lg:order-1 text-start"
         >
           {/* Architecture Badge */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
@@ -81,10 +81,18 @@ export default function Hero() {
 
             {/* Socials */}
             <div className="flex gap-5 ml-2 rtl:ml-0 rtl:mr-2">
-              <a href="https://github.com/SamehDheir" target="_blank" className="text-slate-400 hover:text-slate-900 transition-colors">
+              <a
+                href="https://github.com/SamehDheir"
+                target="_blank"
+                className="text-slate-400 hover:text-slate-900 transition-colors"
+              >
                 <FaGithub size={24} />
               </a>
-              <a href="https://linkedin.com/in/sameh-dheir" target="_blank" className="text-slate-400 hover:text-sky-600 transition-colors">
+              <a
+                href="https://linkedin.com/in/sameh-dheir"
+                target="_blank"
+                className="text-slate-400 hover:text-sky-600 transition-colors"
+              >
                 <FaLinkedin size={24} />
               </a>
             </div>
@@ -108,7 +116,7 @@ export default function Hero() {
           </div>
 
           {/* Floating Experience Badge */}
-          <motion.div 
+          <motion.div
             animate={{ y: [0, -15, 0] }}
             transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
             className="absolute -bottom-6 -left-6 rtl:-left-auto rtl:-right-6 md:-bottom-10 md:-left-10 rtl:md:-right-10 bg-white/90 backdrop-blur-xl p-6 rounded-[2.5rem] shadow-2xl border border-white/50 z-20 flex items-center gap-5"

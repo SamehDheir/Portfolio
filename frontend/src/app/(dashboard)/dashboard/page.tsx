@@ -85,7 +85,7 @@ export default function DashboardPage() {
             Welcome Back, <span className="text-indigo-600">Sameh!</span>
           </h1>
           <p className="text-slate-500 mt-2 font-medium italic">
-            "Your backend is strong, your frontend is clean." 🦾
+            "Your backend is strong, your frontend is clean" 🦾
           </p>
         </div>
         <div className="text-right hidden md:block">

@@ -76,6 +76,8 @@
   "Footer": {
     "rights": "ALL RIGHTS RESERVED",
     "tagline": "FULL-STACK ARCHITECTURE & AI INTEGRATION",
-    "admin": "ADMIN"
-  }
+    "admin": "ADMIN",
+    "projectsLink": "Projects",
+    "blogLink": "Blog"
+}
 }
