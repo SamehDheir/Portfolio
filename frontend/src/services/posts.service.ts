@@ -1,11 +1,22 @@
-import api from '@/lib/axios';
+import api from "@/lib/axios";
+
+export interface PostQueryParams {
+  search?: string;
+  category?: string;
+  page?: number;
+  limit?: number;
+  publishedOnly?: boolean;
+}
 
 export const postsService = {
-  getAll: async (search?: string) => {
-    const params = new URLSearchParams();
-    if (search) params.append("search", search);
-
-    const response = await api.get('/posts', { params });
+  getAll: async (params?: PostQueryParams) => {
+    const response = await api.get("/posts", {
+      params: {
+        ...params,
+        page: params?.page || 1,
+        limit: params?.limit || 6,
+      },
+    });
     return response.data;
   },
 
@@ -15,15 +26,15 @@ export const postsService = {
   },
 
   create: async (formData: FormData) => {
-    const response = await api.post('/posts', formData, {
-      headers: { 'Content-Type': 'multipart/form-data' },
+    const response = await api.post("/posts", formData, {
+      headers: { "Content-Type": "multipart/form-data" },
     });
     return response.data;
   },
 
   update: async (id: string, formData: FormData) => {
     const response = await api.patch(`/posts/${id}`, formData, {
-      headers: { 'Content-Type': 'multipart/form-data' },
+      headers: { "Content-Type": "multipart/form-data" },
     });
     return response.data;
   },
@@ -36,5 +47,5 @@ export const postsService = {
   toggleStatus: async (id: string, isPublished: boolean) => {
     const response = await api.patch(`/posts/${id}/status`, { isPublished });
     return response.data;
-  }
+  },
 };

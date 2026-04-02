@@ -1,55 +1,58 @@
 "use client";
-import { useState, useMemo } from "react";
+import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   FaSearch,
   FaHashtag,
   FaCalendarAlt,
   FaArrowRight,
+  FaChevronLeft,
+  FaChevronRight,
 } from "react-icons/fa";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { useParams } from "next/navigation";
 import { postsService } from "@/services/posts.service";
+import { useDebounce } from "@/hooks/useDebounce"; // تأكد من وجود هذا الهوك أو سأعطيك إياه
 
 export default function BlogArchivePage() {
-  const [search, setSearch] = useState("");
-  const [activeCategory, setActiveCategory] = useState("All");
   const t = useTranslations("Archive");
   const params = useParams();
   const locale = (params?.locale as string) || "en";
   const isAr = locale === "ar";
   const IMAGE_BASE = process.env.NEXT_PUBLIC_IMAGE_BASE_URL;
 
+  // --- States ---
+  const [searchTerm, setSearchTerm] = useState("");
+  const [activeCategory, setActiveCategory] = useState("All");
+  const [page, setPage] = useState(1);
+  const limit = 6;
 
-  // Fetching Posts
-  const {
-    data: posts = [],
-    isLoading,
-    error,
-  } = useQuery({
-    queryKey: ["posts", locale],
-    queryFn: () => postsService.getAll(),
+  // Debounce search to avoid spamming the API
+  const debouncedSearch = useDebounce(searchTerm, 500);
+
+  // --- Fetching Data from Backend (Paginated) ---
+  const { data, isLoading, isPlaceholderData } = useQuery({
+    queryKey: ["posts", locale, debouncedSearch, activeCategory, page],
+    queryFn: () =>
+      postsService.getAll({
+        search: debouncedSearch,
+        category: activeCategory === "All" ? undefined : activeCategory,
+        page,
+        limit,
+      }),
   });
 
-  // Filtering Logic
-  const filteredPosts = useMemo(() => {
-    return posts?.filter((post: any) => {
-      const matchesSearch = post.title
-        .toLowerCase()
-        .includes(search.toLowerCase());
-      const matchesCategory =
-        activeCategory === "All" || post.category === activeCategory;
-      return matchesSearch && matchesCategory;
-    });
-  }, [posts, search, activeCategory]);
+  const posts = data?.data || [];
+  const meta = data?.meta;
 
-  const categories = [
-    "All",
-    ...new Set(posts?.map((p: any) => p.category).filter(Boolean) as string[]),
-  ];
+  // Reset page when filtering
+  useEffect(() => {
+    setPage(1);
+  }, [debouncedSearch, activeCategory]);
+
+  const categories = ["All", "Backend", "Frontend", "AI", "DevOps", "Others"];
 
   return (
     <div className="min-h-screen bg-white dark:bg-slate-950 pt-32 pb-20 transition-colors duration-500">
@@ -78,7 +81,7 @@ export default function BlogArchivePage() {
 
         {/* --- Toolbar: Search & Filters --- */}
         <div
-          className={`flex flex-col md:flex-row gap-6 items-center justify-between mb-16 bg-slate-50 dark:bg-slate-900/50 p-4 rounded-[2.5rem] border border-slate-100 dark:border-slate-800 backdrop-blur-sm transition-all ${isAr ? "md:flex-row-reverse" : ""}`}
+          className={`flex flex-col md:flex-row gap-6 items-center justify-between mb-16 bg-slate-50 dark:bg-slate-900/50 p-4 rounded-[2.5rem] border border-slate-100 dark:border-slate-800 backdrop-blur-sm ${isAr ? "md:flex-row-reverse" : ""}`}
         >
           <div className="relative w-full md:w-96 group">
             <FaSearch
@@ -86,9 +89,10 @@ export default function BlogArchivePage() {
             />
             <input
               type="text"
+              value={searchTerm}
               placeholder={t("searchPlaceholder")}
               className={`w-full py-4 bg-white dark:bg-slate-800 rounded-2xl border-none ring-0 shadow-sm font-bold text-slate-800 dark:text-white placeholder:text-slate-300 dark:placeholder:text-slate-600 focus:ring-2 focus:ring-sky-500/20 transition-all ${isAr ? "pr-14 pl-6 text-right" : "pl-14 pr-6"}`}
-              onChange={(e) => setSearch(e.target.value)}
+              onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
 
@@ -112,96 +116,144 @@ export default function BlogArchivePage() {
         </div>
 
         {/* --- Content Grid --- */}
-        <motion.div
-          layout
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-10 gap-y-20"
-        >
-          <AnimatePresence mode="popLayout">
-            {isLoading
-              ? [1, 2, 3, 4, 5, 6].map((i) => (
-                  <div
-                    key={i}
-                    className="h-[500px] bg-slate-50 dark:bg-slate-900 animate-pulse rounded-[3.5rem]"
-                  />
-                ))
-              : filteredPosts?.map((post: any) => (
-                  <motion.article
-                    layout
-                    key={post.id}
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.9 }}
-                    className={`group flex flex-col ${isAr ? "text-right" : "text-left"}`}
+        <div className="relative min-h-[400px]">
+          <motion.div
+            layout
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-10 gap-y-20"
+          >
+            <AnimatePresence mode="popLayout">
+              {posts.map((post: any) => (
+                <motion.article
+                  layout
+                  key={post.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.9 }}
+                  /* CARD CONTAINER: 
+             Added padding, background, and a sophisticated border 
+          */
+                  className={`group flex flex-col p-4 rounded-[2.5rem] transition-all duration-500
+            bg-white dark:bg-slate-900/40 
+            border border-slate-100 dark:border-slate-800/50
+            hover:border-sky-500/30 hover:shadow-2xl hover:shadow-sky-500/10
+            ${isAr ? "text-right" : "text-left"}`}
+                >
+                  {/* IMAGE SECTION: Added consistent aspect ratio and zoom effect */}
+                  <Link
+                    href={`/${locale}/blog/${post.slug}`}
+                    className="relative aspect-[16/10] rounded-[2rem] overflow-hidden bg-slate-200 dark:bg-slate-800 mb-6 block shadow-sm"
                   >
-                    {/* 🖼️ Cover Image */}
-                    <Link
-                      href={`/${locale}/blog/${post.slug}`}
-                      className="relative aspect-[16/11] rounded-[3rem] overflow-hidden bg-slate-100 dark:bg-slate-900 mb-8 block shadow-2xl shadow-slate-200/50 dark:shadow-none"
+                    <motion.img
+                      src={
+                        post.coverImage
+                          ? `${IMAGE_BASE}${post.coverImage}`
+                          : "/blog-placeholder.jpg"
+                      }
+                      alt={post.title}
+                      className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
+                    />
+                    {/* CATEGORY TAG: Glassmorphism style */}
+                    <div
+                      className={`absolute top-4 ${isAr ? "right-4" : "left-4"}`}
                     >
-                      <motion.img
-                        src={
-                          post.coverImage
-                            ? `${IMAGE_BASE}${post.coverImage}`
-                            : "/blog-placeholder.jpg"
-                        }
-                        alt={post.title}
-                        className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
-                      />
-                      <div
-                        className={`absolute top-6 ${isAr ? "right-6" : "left-6"}`}
-                      >
-                        <span className="px-5 py-2 bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl text-slate-900 dark:text-white font-black uppercase tracking-[0.2em] rounded-2xl shadow-xl flex items-center gap-2 text-[9px]">
-                          <FaHashtag className="text-sky-600" /> {post.category}
-                        </span>
-                      </div>
+                      <span className="px-4 py-1.5 bg-white/90 dark:bg-slate-950/80 backdrop-blur-md text-sky-600 dark:text-sky-400 font-black uppercase tracking-[0.15em] rounded-xl shadow-lg text-[9px] border border-white/20 dark:border-slate-800">
+                        {post.category}
+                      </span>
+                    </div>
+                  </Link>
+
+                  {/* TEXT CONTENT: Organized with proper spacing */}
+                  <div className="px-2 flex flex-col flex-grow">
+                    {/* META INFO: Date */}
+                    <div
+                      className={`flex items-center gap-2 mb-3 text-[11px] font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500 ${isAr ? "flex-row-reverse" : ""}`}
+                    >
+                      <FaCalendarAlt className="text-sky-500/60" />
+                      {new Date(post.createdAt).toLocaleDateString(
+                        isAr ? "ar-EG" : "en-US",
+                        { month: "short", day: "numeric", year: "numeric" },
+                      )}
+                    </div>
+
+                    {/* TITLE: Bold and responsive font sizes */}
+                    <Link href={`/${locale}/blog/${post.slug}`}>
+                      <h3 className="font-black text-slate-900 dark:text-white leading-tight mb-3 group-hover:text-sky-600 dark:group-hover:text-sky-400 transition-colors tracking-tight text-2xl">
+                        {post.title}
+                      </h3>
                     </Link>
 
-                    {/* Metadata & Title */}
-                    <div className="px-4">
-                      <div
-                        className={`flex items-center gap-3 mb-4 text-[11px] font-black uppercase tracking-widest text-slate-400 ${isAr ? "flex-row-reverse" : ""}`}
-                      >
-                        <FaCalendarAlt className="text-sky-500" />
-                        {new Date(post.createdAt).toLocaleDateString(
-                          isAr ? "ar-EG" : "en-US",
-                          { month: "short", day: "numeric", year: "numeric" },
-                        )}
-                      </div>
+                    {/* DESCRIPTION: Limited lines for UI consistency */}
+                    <p
+                      className={`text-slate-500 dark:text-slate-400 font-medium line-clamp-2 leading-relaxed mb-6 ${isAr ? "text-lg" : "text-sm"}`}
+                    >
+                      {post.description}
+                    </p>
 
-                      <Link href={`/${locale}/blog/${post.slug}`}>
-                        <h3
-                          className={`font-black text-slate-900 dark:text-white leading-tight mb-4 group-hover:text-sky-600 dark:group-hover:text-sky-400 transition-colors tracking-tighter ${isAr ? "text-3xl" : "text-3xl"}`}
-                        >
-                          {post.title}
-                        </h3>
-                      </Link>
-
-                      <p
-                        className={`text-slate-500 dark:text-slate-400 font-medium line-clamp-3 leading-relaxed mb-8 ${isAr ? "text-lg" : "text-base"}`}
-                      >
-                        {post.description}
-                      </p>
-
+                    {/* ACTION BUTTON: Pushed to the bottom */}
+                    <div className="mt-auto pt-4 border-t border-slate-50 dark:border-slate-800/50">
                       <Link
                         href={`/${locale}/blog/${post.slug}`}
-                        className={`group/btn inline-flex items-center gap-3 font-black uppercase tracking-[0.3em] text-[10px] text-slate-900 dark:text-white hover:tracking-[0.4em] transition-all ${isAr ? "flex-row-reverse" : ""}`}
+                        className={`group/btn inline-flex items-center gap-2 font-black uppercase tracking-[0.2em] text-[10px] text-slate-900 dark:text-white hover:text-sky-600 dark:hover:text-sky-400 transition-all ${isAr ? "flex-row-reverse" : ""}`}
                       >
                         {t("readMore")}
                         <FaArrowRight
-                          className={`text-sky-600 transition-transform ${isAr ? "rotate-180 group-hover/btn:-translate-x-2" : "group-hover/btn:translate-x-2"}`}
+                          className={`text-sky-600 transition-transform duration-300 ${isAr ? "rotate-180 group-hover/btn:-translate-x-2" : "group-hover/btn:translate-x-2"}`}
                         />
                       </Link>
                     </div>
-                  </motion.article>
-                ))}
-          </AnimatePresence>
-        </motion.div>
+                  </div>
+                </motion.article>
+              ))}
+            </AnimatePresence>
+          </motion.div>
+        </div>
+
+        {/* --- Pagination Controls --- */}
+        {meta && meta.lastPage > 1 && (
+          <div
+            className={`flex justify-center items-center gap-4 mt-32 ${isAr ? "flex-row-reverse" : ""}`}
+          >
+            <button
+              onClick={() => setPage((p) => Math.max(1, p - 1))}
+              disabled={page === 1}
+              className="p-5 rounded-[1.5rem] bg-slate-50 dark:bg-slate-900 text-slate-400 dark:text-slate-600 hover:text-sky-600 disabled:opacity-20 transition-all border border-slate-100 dark:border-slate-800"
+            >
+              {isAr ? <FaChevronRight /> : <FaChevronLeft />}
+            </button>
+
+            <div className="flex gap-2">
+              {Array.from({ length: meta.lastPage }, (_, i) => i + 1).map(
+                (p) => (
+                  <button
+                    key={p}
+                    onClick={() => setPage(p)}
+                    className={`w-14 h-14 rounded-[1.5rem] font-black transition-all ${
+                      page === p
+                        ? "bg-slate-900 dark:bg-sky-600 text-white shadow-2xl scale-110"
+                        : "bg-slate-50 dark:bg-slate-900 text-slate-400 hover:text-slate-900 dark:hover:text-white border border-slate-100 dark:border-slate-800"
+                    }`}
+                  >
+                    {p}
+                  </button>
+                ),
+              )}
+            </div>
+
+            <button
+              onClick={() => setPage((p) => Math.min(meta.lastPage, p + 1))}
+              disabled={page === meta.lastPage}
+              className="p-5 rounded-[1.5rem] bg-slate-50 dark:bg-slate-900 text-slate-400 dark:text-slate-600 hover:text-sky-600 disabled:opacity-20 transition-all border border-slate-100 dark:border-slate-800"
+            >
+              {isAr ? <FaChevronLeft /> : <FaChevronRight />}
+            </button>
+          </div>
+        )}
 
         {/* --- Empty State --- */}
-        {!isLoading && filteredPosts?.length === 0 && (
+        {!isLoading && posts.length === 0 && (
           <div className="py-40 text-center">
             <p className="text-4xl font-black text-slate-200 dark:text-slate-800 uppercase tracking-widest italic">
-              No Posts found
+              {t("noPostsFound") || "No Posts found"}
             </p>
           </div>
         )}

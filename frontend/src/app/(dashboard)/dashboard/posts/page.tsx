@@ -18,6 +18,8 @@ import {
   FaRegClock,
   FaCloudUploadAlt,
   FaFeatherAlt,
+  FaChevronLeft,
+  FaChevronRight,
 } from "react-icons/fa";
 import { MdOutlineDynamicFeed, MdOutlineClose } from "react-icons/md";
 import { VscLoading } from "react-icons/vsc";
@@ -37,9 +39,16 @@ export default function PostsPage() {
   const [postToDelete, setPostToDelete] = useState<any>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  // --- Pagination States ---
+  const [page, setPage] = useState(1);
+  const limit = 8; // عدد العناصر في كل صفحة بالداشبورد
+
   // Search Debounce Logic
   useEffect(() => {
-    const timer = setTimeout(() => setDebouncedSearch(searchQuery), 500);
+    const timer = setTimeout(() => {
+      setDebouncedSearch(searchQuery);
+      setPage(1); // إعادة التصفير عند البحث
+    }, 500);
     return () => clearTimeout(timer);
   }, [searchQuery]);
 
@@ -59,10 +68,21 @@ export default function PostsPage() {
     },
   });
 
-  const { data: posts, isLoading } = useQuery({
-    queryKey: ["posts", debouncedSearch],
-    queryFn: () => postsService.getAll(debouncedSearch),
+  // --- Fetching Data ---
+  // التعديل هنا: استدعاء الـ Object بالكامل وتفكيكه
+  const { data: responseData, isLoading, isPlaceholderData } = useQuery({
+    queryKey: ["posts", "admin", debouncedSearch, page],
+    queryFn: () => postsService.getAll({ 
+        search: debouncedSearch, 
+        page, 
+        limit,
+        publishedOnly: false // جلب كل المقالات (منشور ومسودة) للداشبورد
+    }),
   });
+
+  // استخراج البيانات والـ Meta بشكل آمن
+  const posts = responseData?.data || [];
+  const meta = responseData?.meta;
 
   const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selected = e.target.files?.[0];
@@ -206,7 +226,7 @@ export default function PostsPage() {
       </header>
 
       {/* Table Section */}
-      <div className="bg-white dark:bg-slate-900 rounded-[3rem] shadow-2xl shadow-slate-200/50 dark:shadow-none border border-slate-100 dark:border-slate-800 overflow-hidden">
+      <div className={`bg-white dark:bg-slate-900 rounded-[3rem] shadow-2xl shadow-slate-200/50 dark:shadow-none border border-slate-100 dark:border-slate-800 overflow-hidden transition-opacity ${isPlaceholderData ? 'opacity-50' : 'opacity-100'}`}>
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
@@ -226,8 +246,8 @@ export default function PostsPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-50 dark:divide-slate-800">
-              <AnimatePresence>
-                {posts?.map((post: any) => (
+              <AnimatePresence mode="popLayout">
+                {posts.map((post: any) => (
                   <motion.tr
                     layout
                     initial={{ opacity: 0 }}
@@ -311,7 +331,41 @@ export default function PostsPage() {
             </tbody>
           </table>
         </div>
+
+        {/* --- Empty State --- */}
+        {!isLoading && posts.length === 0 && (
+          <div className="py-20 text-center">
+            <p className="text-xl font-black text-slate-300 dark:text-slate-700 uppercase tracking-widest italic">
+              No Articles Found in Lab
+            </p>
+          </div>
+        )}
       </div>
+
+      {/* --- Dashboard Pagination --- */}
+      {meta && meta.lastPage > 1 && (
+        <div className="flex justify-center items-center gap-3 mt-12">
+          <button
+            onClick={() => setPage((p) => Math.max(1, p - 1))}
+            disabled={page === 1}
+            className="w-12 h-12 flex items-center justify-center rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-400 disabled:opacity-20 transition-all hover:border-indigo-500"
+          >
+            <FaChevronLeft />
+          </button>
+          
+          <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest bg-slate-200/50 dark:bg-slate-800 px-4 py-2 rounded-xl">
+            Page {page} / {meta.lastPage}
+          </span>
+
+          <button
+            onClick={() => setPage((p) => Math.min(meta.lastPage, p + 1))}
+            disabled={page === meta.lastPage}
+            className="w-12 h-12 flex items-center justify-center rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-400 disabled:opacity-20 transition-all hover:border-indigo-500"
+          >
+            <FaChevronRight />
+          </button>
+        </div>
+      )}
 
       {/* Write/Edit Modal */}
       <AnimatePresence>
