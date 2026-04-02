@@ -1,13 +1,13 @@
 import { useQuery } from "@tanstack/react-query";
 import api from "@/lib/axios";
+import { PostQueryParams } from "@/services/posts.service";
 
-export const usePosts = () => {
+export const usePosts = (params?: PostQueryParams) => {
   return useQuery({
-    queryKey: ["posts"],
+    queryKey: ["posts", params],
     queryFn: async () => {
-      const { data } = await api.get("/posts"); 
+      const { data } = await api.get("/posts", { params });
       return data;
     },
-    select: (posts: any[]) => posts.filter((post) => post.published === true),
   });
 };

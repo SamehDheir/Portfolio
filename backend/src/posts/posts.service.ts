@@ -41,63 +41,62 @@ export class PostsService {
     });
   }
 
+  // posts.service.ts
 
-  async findAll(query: {
-    search?: string;
-    category?: string;
-    page?: number;
-    limit?: number;
-    publishedOnly?: boolean;
-  }) {
-    const {
-      search,
-      category,
-      page = 1,
-      limit = 10,
-      publishedOnly = true,
-    } = query;
+async findAll(query: {
+  search?: string;
+  category?: string;
+  page?: number;
+  limit?: number;
+  publishedOnly?: any; 
+}) {
+  const { search, category, page = 1, limit = 10, publishedOnly } = query;
 
-    const skip = (page - 1) * limit;
+  const take = Number(limit);
+  const skip = (Number(page) - 1) * take;
+  const andConditions: any[] = [];
 
-    const where: any = {
-      AND: [
-        publishedOnly ? { published: true } : {},
-        category ? { category: category as any } : {},
-        search
-          ? {
-              OR: [
-                { title: { contains: search, mode: 'insensitive' } },
-                { content: { contains: search, mode: 'insensitive' } },
-                { tags: { hasSome: [search] } },
-              ],
-            }
-          : {},
+  const isDashboardRequest = String(publishedOnly) === 'false';
+
+  if (!isDashboardRequest) {
+    andConditions.push({ published: true });
+    console.log("--- MODE: HOME (Published Only) ---");
+  } else {
+    console.log("--- MODE: DASHBOARD (Show All) ---");
+  }
+
+  if (category) andConditions.push({ category });
+  if (search) {
+    andConditions.push({
+      OR: [
+        { title: { contains: search, mode: 'insensitive' } },
+        { content: { contains: search, mode: 'insensitive' } },
       ],
-    };
+    });
+  }
 
-    const [data, total] = await Promise.all([
-      this.prisma.post.findMany({
-        where,
-        skip,
-        take: limit,
-        include: {
-          author: {
-            select: { name: true, profileImage: true },
-          },
-        },
-        orderBy: { createdAt: 'desc' },
-      }),
-      this.prisma.post.count({ where }),
+  const where = andConditions.length > 0 ? { AND: andConditions } : {};
+  console.log('FINAL PRISMA QUERY:', JSON.stringify(where, null, 2));
+
+  const [data, total] = await Promise.all([
+    this.prisma.post.findMany({ where, skip, take, orderBy: { createdAt: 'desc' } }),
+    this.prisma.post.count({ where }),
+  ]);
+
+  return { data, meta: { total, page: Number(page), lastPage: Math.ceil(total / take) } };
+}
+
+  async getStats() {
+    const [total, published, drafts] = await Promise.all([
+      this.prisma.post.count(),
+      this.prisma.post.count({ where: { published: true } }),
+      this.prisma.post.count({ where: { published: false } }),
     ]);
 
     return {
-      data,
-      meta: {
-        total,
-        page,
-        lastPage: Math.ceil(total / limit),
-        limit,
-      },
+      total,
+      published,
+      drafts,
     };
   }
 

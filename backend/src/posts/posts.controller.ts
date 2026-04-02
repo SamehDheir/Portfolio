@@ -17,7 +17,13 @@ import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { CreatePostDto } from './dto/create-post.dto';
 import { PostsService } from './posts.service';
 import { UpdatePostDto } from './dto/update-post.dto';
-import { ApiBearerAuth, ApiTags, ApiConsumes, ApiQuery, ApiOperation } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiTags,
+  ApiConsumes,
+  ApiQuery,
+  ApiOperation,
+} from '@nestjs/swagger';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
 import { PostQueryDto } from './dto/post-query.dto';
@@ -31,6 +37,11 @@ export class PostsController {
   @ApiOperation({ summary: 'Get all posts with pagination and filters' })
   async findAll(@Query() query: PostQueryDto) {
     return this.postsService.findAll(query);
+  }
+
+  @Get('stats')
+  async getStats() {
+    return this.postsService.getStats();
   }
 
   @Get(':slug')

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { postSchema, PostFormValues } from "@/lib/validations/post";
@@ -24,6 +24,7 @@ import {
 import { MdOutlineDynamicFeed, MdOutlineClose } from "react-icons/md";
 import { VscLoading } from "react-icons/vsc";
 import { HiExternalLink } from "react-icons/hi";
+import { usePosts } from "@/hooks/usePosts";
 
 const IMAGE_BASE = process.env.NEXT_PUBLIC_IMAGE_BASE_URL;
 
@@ -41,13 +42,13 @@ export default function PostsPage() {
 
   // --- Pagination States ---
   const [page, setPage] = useState(1);
-  const limit = 8; // عدد العناصر في كل صفحة بالداشبورد
+  const limit = 8;
 
   // Search Debounce Logic
   useEffect(() => {
     const timer = setTimeout(() => {
       setDebouncedSearch(searchQuery);
-      setPage(1); // إعادة التصفير عند البحث
+      setPage(1);
     }, 500);
     return () => clearTimeout(timer);
   }, [searchQuery]);
@@ -58,31 +59,30 @@ export default function PostsPage() {
     reset,
     formState: { errors },
   } = useForm<PostFormValues>({
-    resolver: zodResolver(postSchema),
+    resolver: zodResolver(postSchema) as any,
     defaultValues: {
       title: "",
       content: "",
       category: "Backend",
-      tags: [],
       isPublished: true,
+      tags: [],
     },
   });
 
-  // --- Fetching Data ---
-  // التعديل هنا: استدعاء الـ Object بالكامل وتفكيكه
-  const { data: responseData, isLoading, isPlaceholderData } = useQuery({
-    queryKey: ["posts", "admin", debouncedSearch, page],
-    queryFn: () => postsService.getAll({ 
-        search: debouncedSearch, 
-        page, 
-        limit,
-        publishedOnly: false // جلب كل المقالات (منشور ومسودة) للداشبورد
-    }),
+  // --- Fetching Data (Updated to include search and page) ---
+  const {
+    data: response,
+    isLoading,
+    isPlaceholderData,
+  } = usePosts({
+    publishedOnly: false,
+    page,
+    limit,
+    search: debouncedSearch,
   });
 
-  // استخراج البيانات والـ Meta بشكل آمن
-  const posts = responseData?.data || [];
-  const meta = responseData?.meta;
+  const posts = response?.data || [];
+  const meta = response?.meta;
 
   const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selected = e.target.files?.[0];
@@ -167,6 +167,7 @@ export default function PostsPage() {
       content: post.content,
       category: post.category || "Backend",
       isPublished: post.published,
+      tags: post.tags || [],
     });
     setPreview(post.coverImage ? `${IMAGE_BASE}${post.coverImage}` : null);
     setIsModalOpen(true);
@@ -226,7 +227,9 @@ export default function PostsPage() {
       </header>
 
       {/* Table Section */}
-      <div className={`bg-white dark:bg-slate-900 rounded-[3rem] shadow-2xl shadow-slate-200/50 dark:shadow-none border border-slate-100 dark:border-slate-800 overflow-hidden transition-opacity ${isPlaceholderData ? 'opacity-50' : 'opacity-100'}`}>
+      <div
+        className={`bg-white dark:bg-slate-900 rounded-[3rem] shadow-2xl shadow-slate-200/50 dark:shadow-none border border-slate-100 dark:border-slate-800 overflow-hidden transition-opacity ${isPlaceholderData ? "opacity-50" : "opacity-100"}`}
+      >
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
@@ -352,7 +355,7 @@ export default function PostsPage() {
           >
             <FaChevronLeft />
           </button>
-          
+
           <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest bg-slate-200/50 dark:bg-slate-800 px-4 py-2 rounded-xl">
             Page {page} / {meta.lastPage}
           </span>

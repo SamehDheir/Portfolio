@@ -14,7 +14,7 @@ import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { useParams } from "next/navigation";
 import { postsService } from "@/services/posts.service";
-import { useDebounce } from "@/hooks/useDebounce"; // تأكد من وجود هذا الهوك أو سأعطيك إياه
+import { useDebounce } from "@/hooks/useDebounce";
 
 export default function BlogArchivePage() {
   const t = useTranslations("Archive");
@@ -129,16 +129,13 @@ export default function BlogArchivePage() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, scale: 0.9 }}
-                  /* CARD CONTAINER: 
-             Added padding, background, and a sophisticated border 
-          */
                   className={`group flex flex-col p-4 rounded-[2.5rem] transition-all duration-500
             bg-white dark:bg-slate-900/40 
             border border-slate-100 dark:border-slate-800/50
             hover:border-sky-500/30 hover:shadow-2xl hover:shadow-sky-500/10
             ${isAr ? "text-right" : "text-left"}`}
                 >
-                  {/* IMAGE SECTION: Added consistent aspect ratio and zoom effect */}
+                  {/* IMAGE SECTION */}
                   <Link
                     href={`/${locale}/blog/${post.slug}`}
                     className="relative aspect-[16/10] rounded-[2rem] overflow-hidden bg-slate-200 dark:bg-slate-800 mb-6 block shadow-sm"
@@ -152,7 +149,7 @@ export default function BlogArchivePage() {
                       alt={post.title}
                       className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
                     />
-                    {/* CATEGORY TAG: Glassmorphism style */}
+                    {/* CATEGORY TAG */}
                     <div
                       className={`absolute top-4 ${isAr ? "right-4" : "left-4"}`}
                     >
@@ -162,7 +159,7 @@ export default function BlogArchivePage() {
                     </div>
                   </Link>
 
-                  {/* TEXT CONTENT: Organized with proper spacing */}
+                  {/* TEXT CONTENT*/}
                   <div className="px-2 flex flex-col flex-grow">
                     {/* META INFO: Date */}
                     <div
@@ -175,21 +172,21 @@ export default function BlogArchivePage() {
                       )}
                     </div>
 
-                    {/* TITLE: Bold and responsive font sizes */}
+                    {/* TITLE */}
                     <Link href={`/${locale}/blog/${post.slug}`}>
                       <h3 className="font-black text-slate-900 dark:text-white leading-tight mb-3 group-hover:text-sky-600 dark:group-hover:text-sky-400 transition-colors tracking-tight text-2xl">
                         {post.title}
                       </h3>
                     </Link>
 
-                    {/* DESCRIPTION: Limited lines for UI consistency */}
+                    {/* DESCRIPTION */}
                     <p
                       className={`text-slate-500 dark:text-slate-400 font-medium line-clamp-2 leading-relaxed mb-6 ${isAr ? "text-lg" : "text-sm"}`}
                     >
                       {post.description}
                     </p>
 
-                    {/* ACTION BUTTON: Pushed to the bottom */}
+                    {/* ACTION BUTTON */}
                     <div className="mt-auto pt-4 border-t border-slate-50 dark:border-slate-800/50">
                       <Link
                         href={`/${locale}/blog/${post.slug}`}

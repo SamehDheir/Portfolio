@@ -44,7 +44,8 @@
     "title": "Latest",
     "titleAccent": "Posts",
     "viewArchive": "View Archive",
-    "continueReading": "Continue Reading"
+    "continueReading": "Continue Reading",
+    "noPostsFound": "No posts found"
   },
   "BlogContent": {
     "loading": "Loading Article",

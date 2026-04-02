@@ -9,14 +9,27 @@ export interface PostQueryParams {
 }
 
 export const postsService = {
+  // @/services/posts.service.ts
+
   getAll: async (params?: PostQueryParams) => {
+    const formattedParams = {
+      ...params,
+      page: params?.page || 1,
+      limit: params?.limit || 6,
+      publishedOnly:
+        params?.publishedOnly !== undefined
+          ? String(params.publishedOnly)
+          : undefined,
+    };
+
     const response = await api.get("/posts", {
-      params: {
-        ...params,
-        page: params?.page || 1,
-        limit: params?.limit || 6,
-      },
+      params: formattedParams,
     });
+    return response.data;
+  },
+
+  getStats: async () => {
+    const response = await api.get("/posts/stats");
     return response.data;
   },
 

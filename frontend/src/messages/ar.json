@@ -43,7 +43,8 @@
     "title": "آخر",
     "titleAccent": "المقالات",
     "viewArchive": "الأرشيف",
-    "continueReading": "تابع القراءة"
+    "continueReading": "تابع القراءة",
+    "noPostsFound": "لم يتم العثور على مقالات"
   },
   "BlogContent": {
     "loading": "جاري تحميل المقال",
