@@ -194,9 +194,10 @@ export default function ProjectsPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: idx * 0.1 }}
-            className="group bg-white dark:bg-slate-900 rounded-[3rem] border border-slate-100 dark:border-slate-800 overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-500 relative flex flex-col h-full"
+            className="group bg-white dark:bg-slate-900 rounded-[2.5rem] border border-slate-100 dark:border-slate-800/50 overflow-hidden shadow-sm hover:shadow-2xl hover:shadow-indigo-500/10 dark:hover:shadow-sky-500/5 transition-all duration-500 relative flex flex-col h-full"
           >
-            <div className="relative h-64 overflow-hidden">
+            {/* Image Section with Overlay Actions */}
+            <div className="relative h-60 overflow-hidden">
               <img
                 src={
                   p.images?.[0]
@@ -205,62 +206,81 @@ export default function ProjectsPage() {
                       : `${API_BASE}${p.images[0]}`
                     : "/placeholder.png"
                 }
-                className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
+                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                 alt={p.title}
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-              <div className="absolute top-6 right-6 flex gap-3 translate-y-[-20px] opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
+
+              {/* Dark Overlay on Hover */}
+              <div className="absolute inset-0 bg-slate-950/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 backdrop-blur-[2px]" />
+
+              {/* Admin Actions - Floating Style */}
+              <div className="absolute top-4 right-4 flex gap-2 translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300 z-10">
                 <button
                   onClick={() => openEditModal(p)}
-                  className="p-4 bg-white/90 dark:bg-slate-800/90 backdrop-blur-xl rounded-2xl text-indigo-600 dark:text-sky-400 shadow-2xl hover:bg-white transition-all border border-white/20"
+                  className="p-3 bg-white dark:bg-slate-800 text-indigo-600 dark:text-sky-400 rounded-2xl shadow-xl hover:scale-110 active:scale-95 transition-all"
+                  title="Edit Project"
                 >
-                  <FaRegEdit size={20} />
+                  <FaRegEdit size={18} />
                 </button>
                 <button
                   onClick={() => openDeleteModal(p)}
-                  className="p-4 bg-white/90 dark:bg-slate-800/90 backdrop-blur-xl rounded-2xl text-red-500 shadow-2xl hover:bg-white transition-all border border-white/20"
+                  className="p-3 bg-white dark:bg-slate-800 text-red-500 rounded-2xl shadow-xl hover:scale-110 active:scale-95 transition-all"
+                  title="Delete Project"
                 >
-                  <FaTrashAlt size={20} />
+                  <FaTrashAlt size={18} />
                 </button>
+              </div>
+
+              {/* Tech Stack Floating Badges (Bottom of Image) */}
+              <div className="absolute bottom-4 left-4 right-4 flex flex-wrap gap-1.5 opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300">
+                {p.techStack?.slice(0, 3).map((t: string) => (
+                  <span
+                    key={t}
+                    className="px-3 py-1 bg-white/20 backdrop-blur-md text-white text-[10px] font-bold rounded-lg uppercase tracking-tight border border-white/20"
+                  >
+                    {t}
+                  </span>
+                ))}
+                {p.techStack?.length > 3 && (
+                  <span className="px-3 py-1 bg-white/20 backdrop-blur-md text-white text-[10px] font-bold rounded-lg border border-white/20">
+                    +{p.techStack.length - 3}
+                  </span>
+                )}
               </div>
             </div>
 
-            <div className="p-8 flex flex-col flex-1">
+            {/* Content Section */}
+            <div className="p-7 flex flex-col flex-1">
               <div className="flex-1">
-                <h3 className="font-black text-2xl text-slate-800 dark:text-white mb-3 group-hover:text-indigo-600 dark:group-hover:text-sky-400 transition-colors">
-                  {p.title}
-                </h3>
-                <p className="text-slate-500 dark:text-slate-400 text-sm font-medium leading-relaxed mb-6 line-clamp-3">
+                <div className="flex justify-between items-start mb-3">
+                  <h3 className="font-black text-xl text-slate-800 dark:text-white leading-tight group-hover:text-indigo-600 dark:group-hover:text-sky-400 transition-colors">
+                    {p.title}
+                  </h3>
+                </div>
+
+                <p className="text-slate-500 dark:text-slate-400 text-sm font-medium leading-relaxed mb-6 line-clamp-2">
                   {p.description}
                 </p>
-                <div className="flex flex-wrap gap-2 mb-8">
-                  {p.techStack?.map((t: string) => (
-                    <span
-                      key={t}
-                      className="px-4 py-1.5 bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-[11px] font-black rounded-xl border border-slate-100 dark:border-slate-700 uppercase tracking-wider"
-                    >
-                      {t}
-                    </span>
-                  ))}
-                </div>
               </div>
-              <div className="flex gap-4 border-t border-slate-50 dark:border-slate-800 pt-6">
+
+              {/* Footer Links - Clean Minimal Style */}
+              <div className="flex items-center gap-3 pt-5 border-t border-slate-50 dark:border-slate-800/50">
                 {p.link && (
                   <a
                     href={p.link}
                     target="_blank"
-                    className="flex items-center gap-2 text-sm font-bold text-indigo-600 dark:text-sky-400 hover:bg-indigo-50 dark:hover:bg-sky-900/20 px-4 py-2 rounded-xl transition-all"
+                    className="flex-1 flex items-center justify-center gap-2 text-[11px] font-black uppercase tracking-widest bg-indigo-50 dark:bg-sky-500/10 text-indigo-600 dark:text-sky-400 py-3 rounded-xl hover:bg-indigo-600 hover:text-white dark:hover:bg-sky-500 dark:hover:text-white transition-all"
                   >
-                    Live Demo <HiOutlineArrowUpRight size={18} />
+                    Preview <HiOutlineArrowUpRight size={14} />
                   </a>
                 )}
                 {p.github && (
                   <a
                     href={p.github}
                     target="_blank"
-                    className="flex items-center gap-2 text-sm font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 px-4 py-2 rounded-xl transition-all"
+                    className="flex-1 flex items-center justify-center gap-2 text-[11px] font-black uppercase tracking-widest bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-400 py-3 rounded-xl hover:bg-slate-900 hover:text-white dark:hover:bg-slate-700 dark:hover:text-white transition-all"
                   >
-                    Code <FaGithub size={18} />
+                    Source <FaGithub size={14} />
                   </a>
                 )}
               </div>

@@ -4,6 +4,7 @@ import { useProjects } from "@/hooks/useProjects";
 import { FaGithub, FaExternalLinkAlt, FaCode } from "react-icons/fa";
 import { useTranslations } from "next-intl";
 import { useParams } from "next/navigation";
+import Link from "next/link";
 
 export default function ProjectsSection() {
   const t = useTranslations("Projects");
@@ -46,7 +47,7 @@ export default function ProjectsSection() {
               Loading Projects...
             </p>
           ) : (
-            projects?.map((project: any, index: number) => (
+            projects?.slice(0, 2).map((project: any, index: number) => (
               <motion.div
                 key={project.id}
                 initial={{ opacity: 0, y: 30 }}
@@ -108,7 +109,13 @@ export default function ProjectsSection() {
         </div>
 
         {/* Bottom CTA */}
-        <div className="mt-20 text-center">
+        <div className="mt-20 flex flex-col sm:flex-row justify-center gap-4">
+          <Link
+            href={`/${locale}/projects`}
+            className="inline-flex items-center gap-3 px-8 py-4 bg-sky-600 rounded-2xl font-black text-white hover:bg-sky-700 transition-all shadow-lg"
+          >
+            {t("viewFullPortfolio")}
+          </Link>
           <a
             href="https://github.com/SamehDheir"
             target="_blank"

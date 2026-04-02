@@ -4,7 +4,7 @@
     "projects": "Projects",
     "skills": "Skills",
     "blog": "Blog",
-     "lang": "English",
+    "lang": "English",
     "contact": "CONTACT ME"
   },
   "Hero": {
@@ -23,8 +23,12 @@
     "title": "Featured",
     "titleAccent": "Work",
     "subtitle": "A curated selection of backend architectures and full-stack platforms I've engineered",
-    "exploreGithub": "Explore More on GitHub"
+    "viewFullPortfolio": "View Full Portfolio",
+    "exploreGithub": "Explore More on GitHub",
+    "viewLive": "Live Demo",
+    "exploreGithubCode": "Code"
   },
+
   "Skills": {
     "badge": "EXPERTISE",
     "title": "Technical",
@@ -79,5 +83,5 @@
     "admin": "ADMIN",
     "projectsLink": "Projects",
     "blogLink": "Blog"
-}
+  }
 }

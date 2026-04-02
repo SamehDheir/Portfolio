@@ -40,9 +40,17 @@ export class ProjectsService {
     });
   }
 
-  async findAll() {
+  async findAll(limit?: number) {
     return this.prisma.project.findMany({
-      orderBy: { createdAt: 'desc' },
+      take: limit ? Number(limit) : undefined,
+      orderBy: {
+        createdAt: 'desc',
+      },
+      include: {
+        author: {
+          select: { name: true, title: true }
+        }
+      }
     });
   }
 
