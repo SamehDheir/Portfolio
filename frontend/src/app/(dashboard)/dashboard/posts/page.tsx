@@ -264,7 +264,7 @@ export default function PostsPage() {
                         <div className="w-16 h-16 shrink-0 rounded-2xl bg-slate-100 dark:bg-slate-800 overflow-hidden border border-slate-100 dark:border-slate-700">
                           {post.coverImage ? (
                             <img
-                              src={`${IMAGE_BASE}${post.coverImage}`}
+                              src={`${IMAGE_BASE}/uploads/${post.coverImage}`}
                               className="object-cover w-full h-full"
                               alt=""
                             />
