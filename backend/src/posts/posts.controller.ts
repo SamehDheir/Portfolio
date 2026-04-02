@@ -17,9 +17,10 @@ import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { CreatePostDto } from './dto/create-post.dto';
 import { PostsService } from './posts.service';
 import { UpdatePostDto } from './dto/update-post.dto';
-import { ApiBearerAuth, ApiTags, ApiConsumes, ApiQuery } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags, ApiConsumes, ApiQuery, ApiOperation } from '@nestjs/swagger';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
+import { PostQueryDto } from './dto/post-query.dto';
 
 @ApiTags('Posts')
 @Controller('posts')
@@ -27,12 +28,13 @@ export class PostsController {
   constructor(private readonly postsService: PostsService) {}
 
   @Get()
-  @ApiQuery({ name: 'search', required: false })
-  async findAll(@Query('search') search?: string) {
-    return this.postsService.findAll(search);
+  @ApiOperation({ summary: 'Get all posts with pagination and filters' })
+  async findAll(@Query() query: PostQueryDto) {
+    return this.postsService.findAll(query);
   }
 
   @Get(':slug')
+  @ApiOperation({ summary: 'Get a single post by slug' })
   async findOne(@Param('slug') slug: string) {
     return this.postsService.findBySlug(slug);
   }

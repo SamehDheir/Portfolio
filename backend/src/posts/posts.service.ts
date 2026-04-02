@@ -1,8 +1,12 @@
-import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  ConflictException,
+} from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
-import slugify from 'slugify'; 
+import slugify from 'slugify';
 
 @Injectable()
 export class PostsService {
@@ -27,7 +31,7 @@ export class PostsService {
       data: {
         title: data.title,
         content: data.content,
-        category: data.category, 
+        category: data.category,
         tags: data.tags || [],
         published: data.published ?? false,
         coverImage: data.coverImage,
@@ -37,26 +41,64 @@ export class PostsService {
     });
   }
 
-  async findAll(search?: string, category?: string) {
-    return this.prisma.post.findMany({
-      where: {
-        AND: [
-          search ? {
-            OR: [
-              { title: { contains: search, mode: 'insensitive' } },
-              { content: { contains: search, mode: 'insensitive' } },
-            ],
-          } : {},
-          category ? { category: category as any } : {},
-        ]
+
+  async findAll(query: {
+    search?: string;
+    category?: string;
+    page?: number;
+    limit?: number;
+    publishedOnly?: boolean;
+  }) {
+    const {
+      search,
+      category,
+      page = 1,
+      limit = 10,
+      publishedOnly = true,
+    } = query;
+
+    const skip = (page - 1) * limit;
+
+    const where: any = {
+      AND: [
+        publishedOnly ? { published: true } : {},
+        category ? { category: category as any } : {},
+        search
+          ? {
+              OR: [
+                { title: { contains: search, mode: 'insensitive' } },
+                { content: { contains: search, mode: 'insensitive' } },
+                { tags: { hasSome: [search] } },
+              ],
+            }
+          : {},
+      ],
+    };
+
+    const [data, total] = await Promise.all([
+      this.prisma.post.findMany({
+        where,
+        skip,
+        take: limit,
+        include: {
+          author: {
+            select: { name: true, profileImage: true },
+          },
+        },
+        orderBy: { createdAt: 'desc' },
+      }),
+      this.prisma.post.count({ where }),
+    ]);
+
+    return {
+      data,
+      meta: {
+        total,
+        page,
+        lastPage: Math.ceil(total / limit),
+        limit,
       },
-      include: {
-        author: {
-          select: { name: true, profileImage: true }
-        }
-      },
-      orderBy: { createdAt: 'desc' },
-    });
+    };
   }
 
   async findBySlug(slug: string) {
