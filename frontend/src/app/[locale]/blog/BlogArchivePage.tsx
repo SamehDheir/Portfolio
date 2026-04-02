@@ -21,6 +21,8 @@ export default function BlogArchivePage() {
   const params = useParams();
   const locale = (params?.locale as string) || "en";
   const isAr = locale === "ar";
+  const IMAGE_BASE = process.env.NEXT_PUBLIC_IMAGE_BASE_URL;
+
 
   // Fetching Posts
   const {
@@ -65,7 +67,6 @@ export default function BlogArchivePage() {
               className={`font-black text-slate-900 dark:text-white tracking-tighter ${isAr ? "text-6xl lg:text-8xl" : "text-8xl"}`}
             >
               {t("title")}
-              <span className="text-sky-600">.</span>
             </h1>
             <p
               className={`text-slate-400 dark:text-slate-500 font-bold mt-4 max-w-2xl ${isAr ? "mr-0 ml-auto text-xl" : "text-lg"}`}
@@ -139,8 +140,8 @@ export default function BlogArchivePage() {
                     >
                       <motion.img
                         src={
-                          post.coverImg
-                            ? `http://localhost:3000${post.coverImg}`
+                          post.coverImage
+                            ? `${IMAGE_BASE}${post.coverImage}`
                             : "/blog-placeholder.jpg"
                         }
                         alt={post.title}
@@ -200,7 +201,7 @@ export default function BlogArchivePage() {
         {!isLoading && filteredPosts?.length === 0 && (
           <div className="py-40 text-center">
             <p className="text-4xl font-black text-slate-200 dark:text-slate-800 uppercase tracking-widest italic">
-              No insights found
+              No Posts found
             </p>
           </div>
         )}

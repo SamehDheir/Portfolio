@@ -13,6 +13,7 @@ import {
 export default function Hero() {
   const { user } = useProfile();
   const t = useTranslations("Hero");
+const IMAGE_BASE = process.env.NEXT_PUBLIC_IMAGE_BASE_URL;
 
   return (
     <section className="relative min-h-screen flex items-center justify-center pt-24 pb-12 overflow-hidden transition-colors duration-500">
@@ -108,7 +109,7 @@ export default function Hero() {
         >
           <div className="relative z-10 w-full max-w-[480px] rounded-[3.5rem] overflow-hidden border-[12px] border-white dark:border-slate-900 shadow-[0_50px_100px_-20px_rgba(0,0,0,0.12)] dark:shadow-none aspect-[4/5] bg-slate-100 dark:bg-slate-800">
             <img
-              src={`http://localhost:3000${user?.profileImage}`}
+              src={`${IMAGE_BASE}${user?.profileImage}`}
               className="w-full h-full object-cover transition-transform duration-700 hover:scale-110"
               alt="Sameh Dheir"
             />

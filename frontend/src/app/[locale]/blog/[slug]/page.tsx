@@ -4,25 +4,28 @@ import { Metadata } from "next";
 type Props = {
   params: Promise<{ slug: string; locale: string }>;
 };
+const IMAGE_BASE = process.env.NEXT_PUBLIC_IMAGE_BASE_URL;
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug, locale } = await params;
   const isAr = locale === "ar";
 
   try {
-    const res = await fetch(`http://localhost:3000/api/v1/posts/${slug}`, {
+    const res = await fetch(`${IMAGE_BASE}/api/v1/posts/${slug}`, {
       next: { revalidate: 3600 },
     });
-    
+
     if (!res.ok) throw new Error("Post not found");
-    
+
     const post = await res.json();
     const siteName = isAr ? "سامح ضهير" : "Sameh Dheir";
     const defaultTitle = isAr ? "مدونة تقنية" : "Technical Blog";
 
     const title = post.title || defaultTitle;
-    const description = post.description || (isAr 
-        ? "مقالات تقنية في هندسة البرمجيات وتطوير الويب والذكاء الاصطناعي بواسطة سامح ضهير" 
+    const description =
+      post.description ||
+      (isAr
+        ? "مقالات تقنية في هندسة البرمجيات وتطوير الويب والذكاء الاصطناعي بواسطة سامح ضهير"
         : "Technical insights on software architecture, web development, and AI by Sameh Dheir");
 
     return {
@@ -40,14 +43,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         description: description,
         url: `https://sameh.dev/${locale}/blog/${slug}`,
         siteName: siteName,
-        images: post.coverImg ? [
-          {
-            url: `http://localhost:3000${post.coverImg}`,
-            width: 1200,
-            height: 630,
-            alt: title,
-          }
-        ] : [],
+        images: post.coverImage
+          ? [
+              {
+                url: `${IMAGE_BASE}${post.coverImage}`,
+                width: 1200,
+                height: 630,
+                alt: title,
+              },
+            ]
+          : [],
         locale: isAr ? "ar_EG" : "en_US",
         type: "article",
         publishedTime: post.createdAt,
@@ -57,20 +62,20 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         card: "summary_large_image",
         title: title,
         description: description,
-        images: post.coverImg ? [`http://localhost:3000${post.coverImg}`] : [],
-      }
+        images: post.coverImage ? [`${IMAGE_BASE}${post.coverImage}`] : [],
+      },
     };
   } catch (e) {
-    return { 
+    return {
       title: isAr ? "مقال | سامح ضهير" : "Post | Sameh Dheir",
-      description: isAr ? "عرض المقال التقني" : "View technical article"
+      description: isAr ? "عرض المقال التقني" : "View technical article",
     };
   }
 }
 
 export default async function Page({ params }: Props) {
   const { slug } = await params;
-  
+
   return (
     <main>
       <BlogContent slug={slug} />

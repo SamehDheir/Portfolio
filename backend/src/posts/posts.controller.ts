@@ -62,10 +62,10 @@ export class PostsController {
     @UploadedFile() file: Express.Multer.File,
   ) {
     const isPublished = String(createPostDto.published) === 'true';
-    const coverImg = file ? `/uploads/${file.filename}` : undefined;
+    const coverImage = file ? `/uploads/${file.filename}` : undefined;
 
     return this.postsService.create(
-      { ...createPostDto, coverImg, published: isPublished },
+      { ...createPostDto, coverImage, published: isPublished },
       req.user.userId,
     );
   }
@@ -99,7 +99,7 @@ export class PostsController {
         ? String(updatePostDto.published) === 'true'
         : undefined;
 
-    const coverImg = file ? `/uploads/${file.filename}` : undefined;
+    const coverImage = file ? `/uploads/${file.filename}` : undefined;
 
     const { title, content, category, slug } = updatePostDto;
 
@@ -108,7 +108,7 @@ export class PostsController {
       content,
       category,
       slug,
-      coverImg,
+      coverImage,
       published: isPublished,
     });
   }

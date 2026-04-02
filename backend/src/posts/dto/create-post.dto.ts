@@ -1,10 +1,10 @@
-import { 
-  IsString, 
-  IsNotEmpty, 
-  IsOptional, 
-  IsBoolean, 
-  IsEnum, 
-  IsArray 
+import {
+  IsString,
+  IsNotEmpty,
+  IsOptional,
+  IsBoolean,
+  IsEnum,
+  IsArray,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
@@ -20,7 +20,8 @@ export class CreatePostDto {
   title: string;
 
   @ApiProperty({
-    example: 'In this post, we will explore how to build scalable microservices...',
+    example:
+      'In this post, we will explore how to build scalable microservices...',
     description: 'The main body of the post (supports Markdown text)',
   })
   @IsString()
@@ -43,11 +44,13 @@ export class CreatePostDto {
   @IsOptional()
   coverImage?: string;
 
-  @ApiProperty({ 
-    enum: Category, 
-    example: 'Backend' 
+  @ApiProperty({
+    enum: Category,
+    example: 'Backend',
   })
-  @IsEnum(Category, { message: 'Category must be: Backend, Frontend, AI, DevOps, or Others' })
+  @IsEnum(Category, {
+    message: 'Category must be: Backend, Frontend, AI, DevOps, or Others',
+  })
   @IsNotEmpty()
   category: Category;
 
@@ -57,10 +60,10 @@ export class CreatePostDto {
     required: false,
   })
   @IsArray()
-  @IsString({ each: true }) 
+  @IsString({ each: true })
   @IsOptional()
   @Transform(({ value }) => {
-    if (typeof value === 'string') return value.split(',').map(t => t.trim());
+    if (typeof value === 'string') return value.split(',').map((t) => t.trim());
     return value;
   })
   tags?: string[];

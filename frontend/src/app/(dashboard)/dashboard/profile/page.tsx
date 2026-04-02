@@ -95,7 +95,7 @@ export default function ProfilePage() {
             <div className="relative w-52 h-52 mx-auto group mb-8 rounded-[3.5rem] bg-slate-50 dark:bg-slate-800 border-4 border-dashed border-slate-200 dark:border-slate-700 hover:border-indigo-400 dark:hover:border-sky-500 transition-all cursor-pointer p-2">
               <div className="w-full h-full overflow-hidden rounded-[2.8rem] relative">
                 <img
-                  src={preview || (user?.profileImage ? `http://localhost:3000${user.profileImage}` : "/placeholder-avatar.png")}
+                  src={preview || (user?.profileImage ? `${process.env.NEXT_PUBLIC_API_URL}${user.profileImage}` : "/placeholder-avatar.png")}
                   className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                   alt="Profile"
                 />

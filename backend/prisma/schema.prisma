@@ -45,6 +45,7 @@ model Skill {
   authorId String
   author   User   @relation(fields: [authorId], references: [id])
 }
+
 enum Category {
   Backend
   Frontend
@@ -54,19 +55,19 @@ enum Category {
 }
 
 model Post {
-  id          String   @id @default(uuid())
-  title       String   @db.VarChar(255)
-  slug        String   @unique 
-  content     String   @db.Text
-  coverImage  String?  
-  category    Category @default(Backend)
-  tags        String[] @default([])
-  published   Boolean  @default(false)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id         String   @id @default(uuid())
+  title      String   @db.VarChar(255)
+  slug       String   @unique
+  content    String   @db.Text
+  coverImage String?
+  category   Category @default(Backend)
+  tags       String[] @default([])
+  published  Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 
-  authorId    String
-  author      User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  authorId String
+  author   User   @relation(fields: [authorId], references: [id], onDelete: Cascade)
 
   @@index([slug])
   @@index([category])

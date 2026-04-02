@@ -23,7 +23,7 @@ import { MdOutlineDynamicFeed, MdOutlineClose } from "react-icons/md";
 import { VscLoading } from "react-icons/vsc";
 import { HiExternalLink } from "react-icons/hi";
 
-const IMAGE_BASE = "http://localhost:3000";
+const IMAGE_BASE = process.env.NEXT_PUBLIC_IMAGE_BASE_URL;
 
 export default function PostsPage() {
   const queryClient = useQueryClient();
@@ -100,7 +100,7 @@ export default function PostsPage() {
       fd.append("published", String(data.isPublished));
 
       if (data.tags && data.tags.length > 0) {
-        data.tags.forEach((tag) => fd.append("tags", tag)); 
+        data.tags.forEach((tag) => fd.append("tags", tag));
       }
 
       if (file) {
@@ -148,7 +148,7 @@ export default function PostsPage() {
       category: post.category || "Backend",
       isPublished: post.published,
     });
-    setPreview(post.coverImg ? `${IMAGE_BASE}${post.coverImg}` : null);
+    setPreview(post.coverImage ? `${IMAGE_BASE}${post.coverImage}` : null);
     setIsModalOpen(true);
   };
 
@@ -239,9 +239,9 @@ export default function PostsPage() {
                     <td className="p-8">
                       <div className="flex items-center gap-6">
                         <div className="w-16 h-16 shrink-0 rounded-2xl bg-slate-100 dark:bg-slate-800 overflow-hidden border border-slate-100 dark:border-slate-700">
-                          {post.coverImg ? (
+                          {post.coverImage ? (
                             <img
-                              src={`${IMAGE_BASE}${post.coverImg}`}
+                              src={`${IMAGE_BASE}${post.coverImage}`}
                               className="object-cover w-full h-full"
                               alt=""
                             />
