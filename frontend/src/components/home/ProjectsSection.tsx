@@ -11,7 +11,6 @@ export default function ProjectsSection() {
   const params = useParams();
   const locale = params.locale as string;
   const { data: projects, isLoading } = useProjects();
-  const IMAGE_BASE = process.env.NEXT_PUBLIC_IMAGE_BASE_URL;
 
   return (
     <section
@@ -61,7 +60,7 @@ export default function ProjectsSection() {
                   <img
                     src={
                       project.images?.[0]
-                        ? `${IMAGE_BASE}${project.images[0]}`
+                        ? `${project.images[0]}`
                         : "/project-placeholder.jpg"
                     }
                     alt={project.title}

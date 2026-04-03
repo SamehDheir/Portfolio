@@ -28,7 +28,6 @@ export default function BlogSection() {
   const params = useParams();
   const locale = (params?.locale as string) || "en";
   const isAr = locale === "ar";
-  const IMAGE_BASE = process.env.NEXT_PUBLIC_IMAGE_BASE_URL;
 
   const { data: response, isLoading } = usePosts({
     limit: 3,

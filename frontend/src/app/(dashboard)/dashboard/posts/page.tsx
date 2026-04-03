@@ -26,7 +26,6 @@ import { VscLoading } from "react-icons/vsc";
 import { HiExternalLink } from "react-icons/hi";
 import { usePosts } from "@/hooks/usePosts";
 
-const IMAGE_BASE = process.env.NEXT_PUBLIC_IMAGE_BASE_URL;
 
 export default function PostsPage() {
   const queryClient = useQueryClient();

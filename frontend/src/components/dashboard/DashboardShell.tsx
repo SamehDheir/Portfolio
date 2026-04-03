@@ -25,7 +25,6 @@ export default function DashboardShell({
   const router = useRouter();
   const pathname = usePathname();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-const IMAGE_BASE = process.env.NEXT_PUBLIC_IMAGE_BASE_URL;
 
   const { user } = useProfile();
 
@@ -153,7 +152,7 @@ const IMAGE_BASE = process.env.NEXT_PUBLIC_IMAGE_BASE_URL;
             <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-white dark:border-slate-700 shadow-sm flex-shrink-0">
               {user?.profileImage ? (
                 <img
-                  src={`${IMAGE_BASE}${user.profileImage}`}
+                  src={user.profileImage}
                   alt="Avatar"
                   className="w-full h-full object-cover"
                 />

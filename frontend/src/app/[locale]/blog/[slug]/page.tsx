@@ -4,14 +4,17 @@ import { Metadata } from "next";
 type Props = {
   params: Promise<{ slug: string; locale: string }>;
 };
-const IMAGE_BASE = process.env.NEXT_PUBLIC_IMAGE_BASE_URL;
+
+// يفضل استخدام رابط الـ API الأساسي هنا
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || "https://portfolio-hyo9.onrender.com";
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug, locale } = await params;
   const isAr = locale === "ar";
 
   try {
-    const res = await fetch(`${IMAGE_BASE}/api/v1/posts/${slug}`, {
+    // 1. تصحيح رابط الـ Fetch لمناداة الـ API
+    const res = await fetch(`${API_BASE}/api/v1/posts/${slug}`, {
       next: { revalidate: 3600 },
     });
 
@@ -28,6 +31,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         ? "مقالات تقنية في هندسة البرمجيات وتطوير الويب والذكاء الاصطناعي بواسطة سامح ضهير"
         : "Technical insights on software architecture, web development, and AI by Sameh Dheir");
 
+    const imageUrl = post.coverImage || ""; 
+
     return {
       title: `${title} | ${siteName}`,
       description: description,
@@ -43,10 +48,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         description: description,
         url: `https://sameh.dev/${locale}/blog/${slug}`,
         siteName: siteName,
-        images: post.coverImage
+        images: imageUrl
           ? [
               {
-                url: `${post.coverImage}`,
+                url: imageUrl,
                 width: 1200,
                 height: 630,
                 alt: title,
@@ -62,7 +67,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         card: "summary_large_image",
         title: title,
         description: description,
-        images: post.coverImage ? [`${post.coverImage}`] : [],
+        images: imageUrl ? [imageUrl] : [],
       },
     };
   } catch (e) {
