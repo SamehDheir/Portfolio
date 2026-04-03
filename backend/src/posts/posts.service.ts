@@ -1,19 +1,16 @@
-import {
-  Injectable,
-  NotFoundException,
-  ConflictException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
 import slugify from 'slugify';
-import { join } from 'path';
-import { unlink } from 'fs/promises';
-import { existsSync } from 'fs';
+import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
 
 @Injectable()
 export class PostsService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private cloudinary: CloudinaryService,
+  ) {}
 
   private async generateUniqueSlug(title: string): Promise<string> {
     const baseSlug = slugify(title, { lower: true, strict: true });
@@ -27,17 +24,19 @@ export class PostsService {
     return slug;
   }
 
-  async create(data: CreatePostDto, userId: string) {
+  async create(data: CreatePostDto, file: Express.Multer.File, userId: string) {
     const slug = await this.generateUniqueSlug(data.title);
+    let coverImageUrl = data.coverImage;
+
+    if (file) {
+      const uploadRes = await this.cloudinary.uploadFile(file);
+      coverImageUrl = uploadRes.secure_url;
+    }
 
     return this.prisma.post.create({
       data: {
-        title: data.title,
-        content: data.content,
-        category: data.category,
-        tags: data.tags || [],
-        published: data.published ?? false,
-        coverImage: data.coverImage,
+        ...data,
+        coverImage: coverImageUrl,
         slug,
         author: { connect: { id: userId } },
       },
@@ -128,59 +127,63 @@ export class PostsService {
     return post;
   }
 
-  async update(id: string, updateData: UpdatePostDto) {
+  async update(
+    id: string,
+    updateData: UpdatePostDto,
+    file?: Express.Multer.File,
+  ) {
     const existingPost = await this.prisma.post.findUnique({ where: { id } });
     if (!existingPost) throw new NotFoundException('Post not found');
 
-    console.log('--- Update Debug Start ---');
+    let coverImageUrl = existingPost.coverImage;
 
-    if (
-      updateData.coverImage &&
-      updateData.coverImage.startsWith('/uploads/')
-    ) {
-      updateData.coverImage = updateData.coverImage.replace('/uploads/', '');
-    }
-
-    console.log('Cleaned Incoming Image:', updateData.coverImage);
-    console.log('Existing Image in DB:', existingPost.coverImage);
-
-    if (updateData.coverImage && existingPost.coverImage) {
-      if (updateData.coverImage !== existingPost.coverImage) {
-        const fileName = existingPost.coverImage.replace('/uploads/', '');
-        const fullPath = join(process.cwd(), 'uploads', fileName);
-
-        console.log('🚀 Attempting to delete:', fullPath);
-
-        if (existsSync(fullPath)) {
-          try {
-            await unlink(fullPath);
-            console.log('✅ Old image purged from storage');
-          } catch (err) {
-            console.error('❌ Unlink failed:', err.message);
-          }
-        } else {
-          console.warn('⚠️ File not found on disk at:', fullPath);
-        }
-      }
+    if (file) {
+      const uploadRes = await this.cloudinary.uploadFile(file);
+      coverImageUrl = uploadRes.secure_url;
     }
 
     if (updateData.title && updateData.title !== existingPost.title) {
       updateData.slug = await this.generateUniqueSlug(updateData.title);
     }
 
+    if (file) {
+      if (
+        existingPost.coverImage &&
+        existingPost.coverImage.includes('cloudinary')
+      ) {
+        await this.cloudinary.deleteFile(existingPost.coverImage);
+      }
+
+      const uploadRes = await this.cloudinary.uploadFile(file);
+      coverImageUrl = uploadRes.secure_url;
+    }
+
     return this.prisma.post.update({
       where: { id },
       data: {
         ...updateData,
+        coverImage: coverImageUrl,
         tags: updateData.tags || existingPost.tags,
       },
     });
   }
+
   async remove(id: string) {
-    try {
-      return await this.prisma.post.delete({ where: { id } });
-    } catch (error) {
-      throw new NotFoundException('Post not found or already deleted');
+    const post = await this.prisma.post.findUnique({ where: { id } });
+    if (!post) throw new NotFoundException('Post not found');
+
+    if (post.coverImage && post.coverImage.includes('cloudinary')) {
+      try {
+        await this.cloudinary.deleteFile(post.coverImage);
+        console.log('✅ Image deleted from Cloudinary');
+      } catch (err) {
+        console.error(
+          '❌ Failed to delete image from Cloudinary:',
+          err.message,
+        );
+      }
     }
+
+    return await this.prisma.post.delete({ where: { id } });
   }
 }

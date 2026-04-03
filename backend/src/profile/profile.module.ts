@@ -4,9 +4,11 @@ import { diskStorage } from 'multer';
 import { extname } from 'path';
 import { ProfileController } from './profile.controller';
 import { ProfileService } from './profile.service';
+import { CloudinaryModule } from 'src/cloudinary/cloudinary.module';
 
 @Module({
   imports: [
+    CloudinaryModule,
     MulterModule.register({
       storage: diskStorage({
         destination: './uploads/profiles',

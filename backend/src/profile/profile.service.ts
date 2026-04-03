@@ -1,35 +1,34 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { UpdateProfileDto } from './dto/update-profile.dto';
-import * as fs from 'fs';
-import { join } from 'path';
+import { CloudinaryService } from '../cloudinary/cloudinary.service';
 
 @Injectable()
 export class ProfileService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private cloudinary: CloudinaryService,
+  ) {}
 
-async getProfile(userId: string) {
-  const user = await this.prisma.user.findUnique({
-    where: { id: userId },
-    select: {
-      id: true,
-      name: true,
-      email: true,
-      title: true,
-      bio: true,
-      profileImage: true,
-      createdAt: true,
-    },
-  });
+  async getProfile(userId: string) {
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        title: true,
+        bio: true,
+        profileImage: true,
+        createdAt: true,
+      },
+    });
 
-  if (!user) {
-    throw new NotFoundException('User profile not found');
+    if (!user) throw new NotFoundException('User profile not found');
+    return user;
   }
 
-  return user;
-}
-
- async update(
+  async update(
     userId: string,
     dto: UpdateProfileDto,
     file?: Express.Multer.File,
@@ -37,30 +36,22 @@ async getProfile(userId: string) {
     const user = await this.prisma.user.findUnique({ where: { id: userId } });
     if (!user) throw new NotFoundException('User not found');
 
-    let imagePath = user.profileImage;
+    let imageUrl = user.profileImage;
 
     if (file) {
-      if (user.profileImage) {
-        const oldPath = join(process.cwd(), user.profileImage);
-
-        if (fs.existsSync(oldPath)) {
-          try {
-            fs.unlinkSync(oldPath);
-            console.log('Old image deleted successfully:', oldPath);
-          } catch (err) {
-            console.error('Error deleting old image file:', err);
-          }
-        }
+      if (user.profileImage && user.profileImage.includes('cloudinary')) {
+        await this.cloudinary.deleteFile(user.profileImage);
       }
 
-      imagePath = `/uploads/profiles/${file.filename}`;
+      const uploadRes = await this.cloudinary.uploadFile(file);
+      imageUrl = uploadRes.secure_url;
     }
 
     return this.prisma.user.update({
       where: { id: userId },
       data: {
         ...dto,
-        profileImage: imagePath,
+        profileImage: imageUrl,
       },
       select: {
         id: true,

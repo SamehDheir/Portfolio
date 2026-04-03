@@ -1,41 +1,37 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateProjectDto } from './dto/create-project.dto';
-import * as fs from 'fs';
-import { join } from 'path';
+import { CloudinaryService } from '../cloudinary/cloudinary.service';
+import { UpdateProjectDto } from './dto/update-project.dto';
 
 @Injectable()
 export class ProjectsService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private cloudinary: CloudinaryService,
+  ) {}
 
-  private deleteFiles(filePaths: string[]) {
-  filePaths.forEach((path) => {
-    const cleanedPath = path.startsWith('/') ? path.substring(1) : path;
+  private async deleteCloudinaryFiles(urls: string[]) {
+    const deletePromises = urls
+      .filter(url => url.includes('cloudinary'))
+      .map(url => this.cloudinary.deleteFile(url));
+    await Promise.all(deletePromises);
+  }
 
-    const fullPath = join(process.cwd(), cleanedPath);
+  async create(data: CreateProjectDto, files: Express.Multer.File[], userId: string) {
+    let imageUrls: string[] = [];
 
-    console.log(`Attempting to delete: ${fullPath}`);
-
-    if (fs.existsSync(fullPath)) {
-      try {
-        fs.unlinkSync(fullPath);
-        console.log(`Successfully deleted: ${fullPath}`);
-      } catch (err) {
-        console.error(`Error deleting file: ${fullPath}`, err);
-      }
-    } else {
-      console.warn(`File not found at: ${fullPath}`);
+    if (files && files.length > 0) {
+      const uploadPromises = files.map(file => this.cloudinary.uploadFile(file));
+      const results = await Promise.all(uploadPromises);
+      imageUrls = results.map(res => res.secure_url);
     }
-  });
-}
 
-  async create(createProjectDto: CreateProjectDto, userId: string) {
     return this.prisma.project.create({
       data: {
-        ...createProjectDto,
-        author: {
-          connect: { id: userId },
-        },
+        ...data,
+        images: imageUrls,
+        author: { connect: { id: userId } },
       },
     });
   }
@@ -43,14 +39,8 @@ export class ProjectsService {
   async findAll(limit?: number) {
     return this.prisma.project.findMany({
       take: limit ? Number(limit) : undefined,
-      orderBy: {
-        createdAt: 'desc',
-      },
-      include: {
-        author: {
-          select: { name: true, title: true }
-        }
-      }
+      orderBy: { createdAt: 'desc' },
+      include: { author: { select: { name: true, title: true } } }
     });
   }
 
@@ -60,30 +50,33 @@ export class ProjectsService {
     return project;
   }
 
-  async update(id: string, updateData: any) {
-    const oldProject = await this.prisma.project.findUnique({ where: { id } });
+  async update(id: string, updateData: UpdateProjectDto, files?: Express.Multer.File[]) {
+    const oldProject = await this.findOne(id);
+    let imageUrls = oldProject.images;
 
-    if (!oldProject) {
-      throw new NotFoundException('Project not found');
+    if (files && files.length > 0) {
+      if (oldProject.images.length > 0) {
+        await this.deleteCloudinaryFiles(oldProject.images);
+      }
+      const uploadPromises = files.map(file => this.cloudinary.uploadFile(file));
+      const results = await Promise.all(uploadPromises);
+      imageUrls = results.map(res => res.secure_url);
     }
-    if (updateData.images && oldProject.images.length > 0) {
-      this.deleteFiles(oldProject.images);
-    }
+
     return this.prisma.project.update({
       where: { id },
       data: {
         ...updateData,
+        images: imageUrls,
       },
     });
   }
 
   async remove(id: string) {
     const project = await this.findOne(id);
-
     if (project.images.length > 0) {
-      this.deleteFiles(project.images);
+      await this.deleteCloudinaryFiles(project.images);
     }
-
     return this.prisma.project.delete({ where: { id } });
   }
 }

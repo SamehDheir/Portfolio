@@ -21,11 +21,8 @@ import {
   ApiBearerAuth,
   ApiTags,
   ApiConsumes,
-  ApiQuery,
   ApiOperation,
 } from '@nestjs/swagger';
-import { diskStorage } from 'multer';
-import { extname } from 'path';
 import { PostQueryDto } from './dto/post-query.dto';
 
 @ApiTags('Posts')
@@ -54,31 +51,19 @@ export class PostsController {
   @ApiConsumes('multipart/form-data')
   @UseGuards(JwtAuthGuard)
   @Post()
-  @UseInterceptors(
-    FileInterceptor('coverImage', {
-      storage: diskStorage({
-        destination: './uploads',
-        filename: (req, file, cb) => {
-          const uniqueSuffix =
-            Date.now() + '-' + Math.round(Math.random() * 1e9);
-          cb(
-            null,
-            `${file.fieldname}-${uniqueSuffix}${extname(file.originalname)}`,
-          );
-        },
-      }),
-    }),
-  )
-  create(
+  @UseInterceptors(FileInterceptor('coverImage'))
+  async create(
     @Body() createPostDto: CreatePostDto,
     @Req() req: any,
     @UploadedFile() file: Express.Multer.File,
   ) {
+    // التعامل مع الـ Boolean اللي بيوصل من الـ FormData كـ String
     const isPublished = String(createPostDto.published) === 'true';
-    const coverImage = file ? `/uploads/${file.filename}` : undefined;
 
+    // نمرر الـ file للـ service وهي بترفع وبتاخد الـ URL
     return this.postsService.create(
-      { ...createPostDto, coverImage, published: isPublished },
+      { ...createPostDto, published: isPublished },
+      file,
       req.user.userId,
     );
   }
@@ -87,21 +72,7 @@ export class PostsController {
   @ApiConsumes('multipart/form-data')
   @UseGuards(JwtAuthGuard)
   @Patch(':id')
-  @UseInterceptors(
-    FileInterceptor('coverImage', {
-      storage: diskStorage({
-        destination: './uploads',
-        filename: (req, file, cb) => {
-          const uniqueSuffix =
-            Date.now() + '-' + Math.round(Math.random() * 1e9);
-          cb(
-            null,
-            `${file.fieldname}-${uniqueSuffix}${extname(file.originalname)}`,
-          );
-        },
-      }),
-    }),
-  )
+  @UseInterceptors(FileInterceptor('coverImage'))
   async update(
     @Param('id') id: string,
     @Body() updatePostDto: UpdatePostDto,
@@ -112,18 +83,11 @@ export class PostsController {
         ? String(updatePostDto.published) === 'true'
         : undefined;
 
-    const coverImage = file ? `/uploads/${file.filename}` : undefined;
-
-    const { title, content, category, slug } = updatePostDto;
-
-    return this.postsService.update(id, {
-      title,
-      content,
-      category,
-      slug,
-      coverImage,
-      published: isPublished,
-    });
+    return this.postsService.update(
+      id,
+      { ...updatePostDto, published: isPublished },
+      file,
+    );
   }
 
   @ApiBearerAuth()
