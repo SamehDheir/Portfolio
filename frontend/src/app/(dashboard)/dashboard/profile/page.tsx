@@ -3,7 +3,13 @@
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useProfile } from "@/hooks/useProfile";
-import { FaUserCircle, FaCloudUploadAlt, FaSave, FaEdit, FaShieldAlt } from "react-icons/fa";
+import {
+  FaUserCircle,
+  FaCloudUploadAlt,
+  FaSave,
+  FaEdit,
+  FaShieldAlt,
+} from "react-icons/fa";
 import { VscLoading } from "react-icons/vsc";
 import { motion } from "framer-motion";
 
@@ -55,14 +61,18 @@ export default function ProfilePage() {
   return (
     <div className="p-4 md:p-8 max-w-7xl mx-auto min-h-screen transition-colors duration-500">
       {/* Dynamic Header */}
-      <motion.header 
+      <motion.header
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         className="mb-10 flex flex-col md:flex-row justify-between items-start md:items-center bg-white dark:bg-slate-900 p-8 rounded-[2.5rem] border border-slate-100 dark:border-slate-800 shadow-sm gap-6"
       >
         <div>
           <h1 className="text-4xl font-black text-slate-900 dark:text-white flex items-center gap-4 tracking-tighter">
-            <FaUserCircle className="text-indigo-600 dark:text-sky-400" size={36} /> Identity Lab
+            <FaUserCircle
+              className="text-indigo-600 dark:text-sky-400"
+              size={36}
+            />{" "}
+            Identity Lab
           </h1>
           <p className="text-slate-400 dark:text-slate-500 font-bold ml-1 uppercase tracking-[0.2em] text-[10px] mt-2">
             Fine-tune your digital presence
@@ -73,15 +83,21 @@ export default function ProfilePage() {
           disabled={isUpdating}
           className="w-full md:w-auto bg-slate-900 dark:bg-indigo-600 hover:bg-indigo-700 text-white px-10 py-5 rounded-2xl font-bold flex items-center justify-center gap-3 transition-all shadow-xl active:scale-95 disabled:opacity-50"
         >
-          {isUpdating ? <VscLoading className="animate-spin text-xl" /> : <FaSave className="text-xl" />} 
+          {isUpdating ? (
+            <VscLoading className="animate-spin text-xl" />
+          ) : (
+            <FaSave className="text-xl" />
+          )}
           <span>Save Profile</span>
         </button>
       </motion.header>
 
-      <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-        
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="grid grid-cols-1 lg:grid-cols-12 gap-8"
+      >
         {/* Sidebar: Identity & Avatar */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.1 }}
@@ -95,14 +111,26 @@ export default function ProfilePage() {
             <div className="relative w-52 h-52 mx-auto group mb-8 rounded-[3.5rem] bg-slate-50 dark:bg-slate-800 border-4 border-dashed border-slate-200 dark:border-slate-700 hover:border-indigo-400 dark:hover:border-sky-500 transition-all cursor-pointer p-2">
               <div className="w-full h-full overflow-hidden rounded-[2.8rem] relative">
                 <img
-                  src={preview || (user?.profileImage ? `${process.env.NEXT_PUBLIC_API_URL}${user.profileImage}` : "/placeholder-avatar.png")}
+                  src={
+                    preview ||
+                    (user?.profileImage
+                      ? `${user.profileImage}`
+                      : "/placeholder-avatar.png")
+                  }
                   className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                   alt="Profile"
                 />
                 <label className="absolute inset-0 flex flex-col gap-2 items-center justify-center bg-indigo-900/80 opacity-0 group-hover:opacity-100 cursor-pointer transition-all backdrop-blur-sm">
                   <FaCloudUploadAlt className="text-white text-4xl animate-bounce" />
-                  <span className="text-[10px] font-black text-white uppercase tracking-widest">Update Photo</span>
-                  <input type="file" className="hidden" onChange={onFileChange} accept="image/*" />
+                  <span className="text-[10px] font-black text-white uppercase tracking-widest">
+                    Update Photo
+                  </span>
+                  <input
+                    type="file"
+                    className="hidden"
+                    onChange={onFileChange}
+                    accept="image/*"
+                  />
                 </label>
               </div>
             </div>
@@ -111,7 +139,10 @@ export default function ProfilePage() {
               {user?.name || "Senior Developer"}
             </h2>
             <div className="flex items-center justify-center gap-2 mt-3">
-              <FaShieldAlt className="text-indigo-500 dark:text-sky-400" size={12} />
+              <FaShieldAlt
+                className="text-indigo-500 dark:text-sky-400"
+                size={12}
+              />
               <span className="text-[10px] font-black text-indigo-600 dark:text-sky-400 uppercase tracking-widest">
                 {user?.role || "Member"}
               </span>
@@ -121,13 +152,14 @@ export default function ProfilePage() {
           <div className="bg-indigo-600 dark:bg-indigo-900/30 p-8 rounded-[2.5rem] text-white">
             <h3 className="font-black text-lg mb-2">Visibility Tip</h3>
             <p className="text-indigo-100 dark:text-indigo-300 text-sm leading-relaxed">
-              Your professional title and bio are indexed for search. Make them impactful!
+              Your professional title and bio are indexed for search. Make them
+              impactful!
             </p>
           </div>
         </motion.div>
 
         {/* Main Content: Bio & Data */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.2 }}
@@ -152,7 +184,7 @@ export default function ProfilePage() {
                   Secure Email (Verified)
                 </label>
                 <div className="w-full p-5 bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl font-bold text-slate-400 dark:text-slate-600 flex items-center gap-3">
-                   <span className="truncate">{user?.email}</span>
+                  <span className="truncate">{user?.email}</span>
                 </div>
               </div>
             </div>
@@ -178,7 +210,9 @@ export default function ProfilePage() {
               <label className="text-[11px] font-black uppercase text-slate-400 dark:text-slate-500 ml-2">
                 The Narrative (Bio)
               </label>
-              <span className="text-[10px] font-bold text-indigo-400 dark:text-sky-600 px-3 py-1 bg-indigo-50 dark:bg-sky-500/10 rounded-full">Markdown Supported</span>
+              <span className="text-[10px] font-bold text-indigo-400 dark:text-sky-600 px-3 py-1 bg-indigo-50 dark:bg-sky-500/10 rounded-full">
+                Markdown Supported
+              </span>
             </div>
             <textarea
               {...register("bio")}

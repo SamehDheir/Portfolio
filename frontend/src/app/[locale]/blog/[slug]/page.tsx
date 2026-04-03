@@ -5,7 +5,6 @@ type Props = {
   params: Promise<{ slug: string; locale: string }>;
 };
 
-// يفضل استخدام رابط الـ API الأساسي هنا
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || "https://portfolio-hyo9.onrender.com";
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -13,7 +12,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const isAr = locale === "ar";
 
   try {
-    // 1. تصحيح رابط الـ Fetch لمناداة الـ API
     const res = await fetch(`${API_BASE}/api/v1/posts/${slug}`, {
       next: { revalidate: 3600 },
     });
