@@ -110,7 +110,7 @@ export default function BlogContent({ slug }: { slug: string }) {
               <div className="absolute -inset-6 bg-gradient-to-tr from-sky-500/20 to-red-500/10 rounded-[4rem] blur-3xl opacity-30 -z-10 group-hover:opacity-50 transition-opacity" />
               <div className="relative aspect-[21/10] rounded-[3rem] overflow-hidden border-8 border-white dark:border-slate-900 shadow-2xl transition-all duration-700">
                 <img
-                  src={`${IMAGE_BASE}${post.coverImage}`}
+                  src={post.coverImage}
                   alt={post.title}
                   className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-[1.5s]"
                 />

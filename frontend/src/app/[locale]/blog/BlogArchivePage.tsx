@@ -143,7 +143,7 @@ export default function BlogArchivePage() {
                     <motion.img
                       src={
                         post.coverImage
-                          ? `${IMAGE_BASE}${post.coverImage}`
+                          ? `${post.coverImage}`
                           : "/blog-placeholder.jpg"
                       }
                       alt={post.title}

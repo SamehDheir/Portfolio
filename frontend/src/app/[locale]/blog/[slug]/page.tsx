@@ -46,7 +46,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         images: post.coverImage
           ? [
               {
-                url: `${IMAGE_BASE}${post.coverImage}`,
+                url: `${post.coverImage}`,
                 width: 1200,
                 height: 630,
                 alt: title,
@@ -62,7 +62,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         card: "summary_large_image",
         title: title,
         description: description,
-        images: post.coverImage ? [`${IMAGE_BASE}${post.coverImage}`] : [],
+        images: post.coverImage ? [`${post.coverImage}`] : [],
       },
     };
   } catch (e) {

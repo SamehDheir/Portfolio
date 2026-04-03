@@ -117,7 +117,7 @@ export default function BlogSection() {
                     transition={{ duration: 0.8 }}
                     src={
                       post.coverImage
-                        ? `${IMAGE_BASE}${post.coverImage}`
+                        ? `${post.coverImage}`
                         : "/blog-placeholder.jpg"
                     }
                     alt={post.title}
