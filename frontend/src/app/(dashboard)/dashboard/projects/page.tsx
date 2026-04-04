@@ -40,7 +40,7 @@ export default function ProjectsPage() {
     handleSubmit,
     reset,
     control,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm<ProjectFormValues>({
     resolver: zodResolver(projectSchema) as unknown as any,
     defaultValues: { techStack: [] },
@@ -468,10 +468,20 @@ export default function ProjectsPage() {
               <div className="flex gap-4 mt-16">
                 <button
                   type="submit"
+                  disabled={isSubmitting}
                   className="flex-1 bg-slate-900 dark:bg-indigo-600 hover:bg-indigo-600 dark:hover:bg-indigo-700 text-white py-6 rounded-[2rem] font-black text-xl shadow-2xl transition-all active:scale-95 flex items-center justify-center gap-3 group"
                 >
-                  {selectedProject ? "Commit Changes" : "Deploy Project"}
-                  <HiOutlineArrowUpRight className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+                  {isSubmitting ? (
+                    <div className="flex items-center gap-3">
+                      <VscLoading className="animate-spin" size={24} />
+                      <span>Uploading Assets...</span>
+                    </div>
+                  ) : (
+                    <>
+                      {selectedProject ? "Commit Changes" : "Deploy Project"}
+                      <HiOutlineArrowUpRight className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+                    </>
+                  )}
                 </button>
               </div>
             </motion.form>

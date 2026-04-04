@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateProjectDto } from './dto/create-project.dto';
 import { CloudinaryService } from '../cloudinary/cloudinary.service';
@@ -13,18 +17,42 @@ export class ProjectsService {
 
   private async deleteCloudinaryFiles(urls: string[]) {
     const deletePromises = urls
-      .filter(url => url.includes('cloudinary'))
-      .map(url => this.cloudinary.deleteFile(url));
+      .filter((url) => url && url.includes('cloudinary'))
+      .map((url) => {
+        try {
+          const parts = url.split('upload/');
+          if (parts.length < 2) return Promise.resolve();
+
+          const pathWithVersion = parts[1];
+          const segments = pathWithVersion.split('/');
+
+          const publicIdWithExt = segments.slice(1).join('/');
+
+          const publicId = publicIdWithExt.split('.')[0];
+
+          return this.cloudinary.deleteFile(publicId);
+        } catch (error) {
+          console.error(`خطأ في معالجة رابط Cloudinary: ${url}`, error);
+          return Promise.resolve();
+        }
+      });
+
     await Promise.all(deletePromises);
   }
 
-  async create(data: CreateProjectDto, files: Express.Multer.File[], userId: string) {
+  async create(
+    data: CreateProjectDto,
+    files: Express.Multer.File[],
+    userId: string,
+  ) {
     let imageUrls: string[] = [];
 
     if (files && files.length > 0) {
-      const uploadPromises = files.map(file => this.cloudinary.uploadFile(file));
+      const uploadPromises = files.map((file) =>
+        this.cloudinary.uploadFile(file, 'portfolio/projects'),
+      );
       const results = await Promise.all(uploadPromises);
-      imageUrls = results.map(res => res.secure_url);
+      imageUrls = results.map((res) => res.secure_url);
     }
 
     return this.prisma.project.create({
@@ -40,7 +68,7 @@ export class ProjectsService {
     return this.prisma.project.findMany({
       take: limit ? Number(limit) : undefined,
       orderBy: { createdAt: 'desc' },
-      include: { author: { select: { name: true, title: true } } }
+      include: { author: { select: { name: true, title: true } } },
     });
   }
 
@@ -50,23 +78,32 @@ export class ProjectsService {
     return project;
   }
 
-  async update(id: string, updateData: UpdateProjectDto, files?: Express.Multer.File[]) {
+  async update(
+    id: string,
+    updateData: UpdateProjectDto,
+    files?: Express.Multer.File[],
+  ) {
     const oldProject = await this.findOne(id);
     let imageUrls = oldProject.images;
 
     if (files && files.length > 0) {
-      if (oldProject.images.length > 0) {
+      if (oldProject.images && oldProject.images.length > 0) {
         await this.deleteCloudinaryFiles(oldProject.images);
       }
-      const uploadPromises = files.map(file => this.cloudinary.uploadFile(file));
+
+      const uploadPromises = files.map((file) =>
+        this.cloudinary.uploadFile(file, 'portfolio/projects'),
+      );
       const results = await Promise.all(uploadPromises);
-      imageUrls = results.map(res => res.secure_url);
+      imageUrls = results.map((res) => res.secure_url);
     }
+
+    const { images, ...dataToUpdate } = updateData;
 
     return this.prisma.project.update({
       where: { id },
       data: {
-        ...updateData,
+        ...dataToUpdate,
         images: imageUrls,
       },
     });
@@ -74,9 +111,13 @@ export class ProjectsService {
 
   async remove(id: string) {
     const project = await this.findOne(id);
-    if (project.images.length > 0) {
+
+    const deletedProject = await this.prisma.project.delete({ where: { id } });
+
+    if (project.images && project.images.length > 0) {
       await this.deleteCloudinaryFiles(project.images);
     }
-    return this.prisma.project.delete({ where: { id } });
+
+    return deletedProject;
   }
 }

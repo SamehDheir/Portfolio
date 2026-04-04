@@ -33,34 +33,23 @@ export class ProfileService {
     dto: UpdateProfileDto,
     file?: Express.Multer.File,
   ) {
-    const user = await this.prisma.user.findUnique({ where: { id: userId } });
-    if (!user) throw new NotFoundException('User not found');
-
-    let imageUrl = user.profileImage;
+    let imageUrl: string | undefined;
 
     if (file) {
-      if (user.profileImage && user.profileImage.includes('cloudinary')) {
-        await this.cloudinary.deleteFile(user.profileImage);
-      }
-
-      const uploadRes = await this.cloudinary.uploadFile(file);
+      const uploadRes = await this.cloudinary.uploadFile(
+        file,
+        'portfolio/profile',
+      );
       imageUrl = uploadRes.secure_url;
     }
+
+    const { profileImage, ...updateData } = dto;
 
     return this.prisma.user.update({
       where: { id: userId },
       data: {
-        ...dto,
-        profileImage: imageUrl,
-      },
-      select: {
-        id: true,
-        name: true,
-        email: true,
-        title: true,
-        bio: true,
-        profileImage: true,
-        updatedAt: true,
+        ...updateData,
+        ...(imageUrl && { profileImage: imageUrl }),
       },
     });
   }

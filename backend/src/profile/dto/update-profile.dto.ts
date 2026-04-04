@@ -28,6 +28,5 @@ export class UpdateProfileDto {
   bio?: string;
 
   @IsOptional()
-  @IsString()
-  updatedAt?: Date;
+  profileImage?: any;
 }
