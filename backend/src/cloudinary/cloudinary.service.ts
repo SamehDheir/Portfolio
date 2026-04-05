@@ -9,15 +9,21 @@ export class CloudinaryService {
     file: Express.Multer.File,
     folderName: string = 'portfolio/others',
   ): Promise<UploadApiResponse | UploadApiErrorResponse> {
+    const isPdf = file.mimetype === 'application/pdf';
+
     return new Promise((resolve, reject) => {
       const upload = cloudinary.uploader.upload_stream(
         {
           folder: folderName,
-          resource_type: 'auto',
+          resource_type: isPdf ? 'raw' : 'auto',
+          public_id: `${Date.now()}-${file.originalname.split('.')[0]}`,
+          format: isPdf ? 'pdf' : undefined,
+          type: 'upload',
+          access_mode: 'public',
         },
         (error, result) => {
           if (error) return reject(error);
-           if (result) resolve(result);
+          if (result) resolve(result);
         },
       );
 
@@ -25,23 +31,18 @@ export class CloudinaryService {
     });
   }
 
-
   async deleteFile(publicUrl: string) {
     try {
-      if (publicUrl.includes('http')) {
+      if (!publicUrl) return;
+
+      if (publicUrl.includes('upload/')) {
         const parts = publicUrl.split('upload/');
-        if (parts.length > 1) {
-          const pathSegments = parts[1].split('/');
-          const publicIdWithExt = pathSegments.slice(1).join('/'); 
-          const publicId = publicIdWithExt.split('.')[0];
-          
-          console.log(`--- Cloudinary Delete Attempt ---`);
-          console.log(`Target ID: ${publicId}`);
-          
-          const result = await cloudinary.uploader.destroy(publicId);
-          console.log(`Result:`, result);
-          return result;
-        }
+        const publicId = parts[1].split('/').slice(1).join('/').split('.')[0];
+
+        console.log(`--- Cloudinary Delete Attempt ---`);
+        console.log(`Target ID: ${publicId}`);
+
+        return await cloudinary.uploader.destroy(publicId);
       }
 
       return await cloudinary.uploader.destroy(publicUrl);

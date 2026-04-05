@@ -28,5 +28,9 @@ export class UpdateProfileDto {
   bio?: string;
 
   @IsOptional()
+  @IsString()
+  cvUrl?: string;
+
+  @IsOptional()
   profileImage?: any;
 }

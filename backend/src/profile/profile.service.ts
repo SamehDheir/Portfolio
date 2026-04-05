@@ -10,6 +10,16 @@ export class ProfileService {
     private cloudinary: CloudinaryService,
   ) {}
 
+  private async deleteOldFile(url: string | null) {
+    if (url && url.includes('cloudinary')) {
+      const parts = url.split('upload/');
+      if (parts.length > 1) {
+        const publicId = parts[1].split('/').slice(1).join('/').split('.')[0];
+        await this.cloudinary.deleteFile(publicId);
+      }
+    }
+  }
+
   async getProfile(userId: string) {
     const user = await this.prisma.user.findUnique({
       where: { id: userId },
@@ -20,7 +30,9 @@ export class ProfileService {
         title: true,
         bio: true,
         profileImage: true,
+        cvUrl: true,
         createdAt: true,
+        updatedAt: true,
       },
     });
 
@@ -31,25 +43,41 @@ export class ProfileService {
   async update(
     userId: string,
     dto: UpdateProfileDto,
-    file?: Express.Multer.File,
+    files?: {
+      profileImage?: Express.Multer.File[];
+      cvFile?: Express.Multer.File[];
+    },
   ) {
-    let imageUrl: string | undefined;
+    const user = await this.getProfile(userId);
+    let imageUrl = user.profileImage;
+    let cvUrl = user.cvUrl;
 
-    if (file) {
+    if (files?.profileImage?.[0]) {
+      await this.deleteOldFile(user.profileImage);
       const uploadRes = await this.cloudinary.uploadFile(
-        file,
+        files.profileImage[0],
         'portfolio/profile',
       );
       imageUrl = uploadRes.secure_url;
     }
 
-    const { profileImage, ...updateData } = dto;
+    if (files?.cvFile?.[0]) {
+      await this.deleteOldFile(user.cvUrl);
+      const uploadRes = await this.cloudinary.uploadFile(
+        files.cvFile[0],
+        'portfolio/docs',
+      );
+      cvUrl = uploadRes.secure_url;
+    }
+
+    const { profileImage, cvUrl: dtoCvUrl, ...updateData } = dto;
 
     return this.prisma.user.update({
       where: { id: userId },
       data: {
         ...updateData,
-        ...(imageUrl && { profileImage: imageUrl }),
+        profileImage: imageUrl,
+        cvUrl: cvUrl,
       },
     });
   }

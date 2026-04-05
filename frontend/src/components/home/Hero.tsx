@@ -70,13 +70,26 @@ export default function Hero() {
             </motion.a>
 
             <motion.a
-              whileHover={{ scale: 1.02, backgroundColor: "var(--hover-bg)" }}
-              whileTap={{ scale: 0.98 }}
-              href="/cv.pdf"
+              whileHover={
+                user?.cvUrl
+                  ? { scale: 1.02, backgroundColor: "var(--hover-bg)" }
+                  : {}
+              }
+              whileTap={user?.cvUrl ? { scale: 0.98 } : {}}
+              href={user?.cvUrl || "#"}
               target="_blank"
-              className="border-2 border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white px-10 py-5 rounded-2xl font-black text-sm uppercase tracking-widest transition-all flex items-center gap-3 hover:bg-slate-50 dark:hover:bg-slate-800"
+              rel="noopener noreferrer" 
+              className={`border-2 border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white px-10 py-5 rounded-2xl font-black text-sm uppercase tracking-widest transition-all flex items-center gap-3 
+              ${!user?.cvUrl ? "opacity-50 cursor-not-allowed" : "hover:bg-slate-50 dark:hover:bg-slate-800"}`}
+              onClick={(e) => {
+                if (!user?.cvUrl) {
+                  e.preventDefault();
+                  alert("CV file not yet uploaded");
+                }
+              }}
             >
-              <FaDownload size={16} /> {t("downloadCV")}
+              <FaDownload size={16} />
+              {t("downloadCV")}
             </motion.a>
 
             {/* Socials */}

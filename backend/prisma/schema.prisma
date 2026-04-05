@@ -13,6 +13,7 @@ model User {
   name         String
   title        String?
   bio          String?   @db.Text
+  cvUrl        String?
   profileImage String?   @default("/uploads/profiles/sameh.jpeg")
   skills       Skill[]
   projects     Project[]

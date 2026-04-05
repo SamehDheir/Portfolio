@@ -7,8 +7,10 @@ import {
   Request,
   UseGuards,
   Get,
+  UploadedFiles,
+  UnauthorizedException,
 } from '@nestjs/common';
-import { FileInterceptor } from '@nestjs/platform-express';
+import { FileFieldsInterceptor, FileInterceptor } from '@nestjs/platform-express';
 import { ProfileService } from './profile.service';
 import { UpdateProfileDto } from './dto/update-profile.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
@@ -25,16 +27,27 @@ export class ProfileController {
   async getProfile(@Request() req) {
     return this.profileService.getProfile(req.user.userId);
   }
-
-  @Patch('update')
+@Patch('update')
   @ApiBearerAuth()
   @ApiConsumes('multipart/form-data')
-  @UseInterceptors(FileInterceptor('profileImage'))
+  @UseInterceptors(
+    FileFieldsInterceptor([
+      { name: 'profileImage', maxCount: 1 },
+      { name: 'cvFile', maxCount: 1 },
+    ]),
+  )
   async update(
     @Request() req,
     @Body() dto: UpdateProfileDto,
-    @UploadedFile() file: Express.Multer.File,
+    @UploadedFiles() files: { profileImage?: Express.Multer.File[]; cvFile?: Express.Multer.File[] },
   ) {
-    return this.profileService.update(req.user.userId, dto, file);
+    const id = req.user.id || req.user.sub || req.user.userId;
+
+    if (!id) {
+       console.log('User Object:', req.user);
+       throw new UnauthorizedException('User ID not found in request');
+    }
+
+    return this.profileService.update(id, dto, files);
   }
 }

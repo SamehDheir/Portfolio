@@ -9,13 +9,17 @@ import {
   FaSave,
   FaEdit,
   FaShieldAlt,
+  FaFilePdf,
+  FaCheckCircle,
+  FaExternalLinkAlt,
 } from "react-icons/fa";
 import { VscLoading } from "react-icons/vsc";
 import { motion } from "framer-motion";
 
 export default function ProfilePage() {
   const { user, isLoading, updateProfile, isUpdating } = useProfile();
-  const [file, setFile] = useState<File | null>(null);
+  const [imgFile, setImgFile] = useState<File | null>(null);
+  const [cvFile, setCvFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
 
   const { register, handleSubmit, reset } = useForm();
@@ -30,24 +34,33 @@ export default function ProfilePage() {
     }
   }, [user, reset]);
 
-  const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const onImgChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selected = e.target.files?.[0];
     if (selected) {
-      setFile(selected);
-      // Clean up previous preview memory
+      setImgFile(selected);
       if (preview) URL.revokeObjectURL(preview);
       setPreview(URL.createObjectURL(selected));
+    }
+  };
+
+  const onCvChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selected = e.target.files?.[0];
+    if (selected && selected.type === "application/pdf") {
+      setCvFile(selected);
+    } else if (selected) {
+      alert("Please upload a PDF file.");
     }
   };
 
   const onSubmit = (data: any) => {
     const fd = new FormData();
     fd.append("name", data.name);
-    fd.append("title", data.title);
-    fd.append("bio", data.bio);
-    if (file) {
-      fd.append("profileImage", file);
-    }
+    fd.append("title", data.title || "");
+    fd.append("bio", data.bio || "");
+
+    if (imgFile) fd.append("profileImage", imgFile);
+    if (cvFile) fd.append("cvFile", cvFile);
+
     updateProfile(fd);
   };
 
@@ -60,7 +73,7 @@ export default function ProfilePage() {
 
   return (
     <div className="p-4 md:p-8 max-w-7xl mx-auto min-h-screen transition-colors duration-500">
-      {/* Dynamic Header */}
+      {/* Header */}
       <motion.header
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -88,141 +101,137 @@ export default function ProfilePage() {
           ) : (
             <FaSave className="text-xl" />
           )}
-          <span>Save Profile</span>
+          <span>Save Changes</span>
         </button>
       </motion.header>
 
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        className="grid grid-cols-1 lg:grid-cols-12 gap-8"
-      >
-        {/* Sidebar: Identity & Avatar */}
-        <motion.div
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: 0.1 }}
-          className="lg:col-span-4 space-y-6"
-        >
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        {/* Sidebar */}
+        <motion.div className="lg:col-span-4 space-y-6">
+          {/* Profile Image Card */}
           <div className="bg-white dark:bg-slate-900 p-10 rounded-[3rem] border border-slate-100 dark:border-slate-800 shadow-xl text-center">
             <label className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest block mb-6">
               Vessel Appearance
             </label>
-
-            <div className="relative w-52 h-52 mx-auto group mb-8 rounded-[3.5rem] bg-slate-50 dark:bg-slate-800 border-4 border-dashed border-slate-200 dark:border-slate-700 hover:border-indigo-400 dark:hover:border-sky-500 transition-all cursor-pointer p-2">
+            <div className="relative w-52 h-52 mx-auto group mb-8 rounded-[3.5rem] bg-slate-50 dark:bg-slate-800 border-4 border-dashed border-slate-200 dark:border-slate-700 hover:border-indigo-400 transition-all cursor-pointer p-2">
               <div className="w-full h-full overflow-hidden rounded-[2.8rem] relative">
                 <img
                   src={
-                    preview ||
-                    (user?.profileImage
-                      ? `${user.profileImage}`
-                      : "/placeholder-avatar.png")
+                    preview || user?.profileImage || "/placeholder-avatar.png"
                   }
                   className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                   alt="Profile"
                 />
                 <label className="absolute inset-0 flex flex-col gap-2 items-center justify-center bg-indigo-900/80 opacity-0 group-hover:opacity-100 cursor-pointer transition-all backdrop-blur-sm">
                   <FaCloudUploadAlt className="text-white text-4xl animate-bounce" />
-                  <span className="text-[10px] font-black text-white uppercase tracking-widest">
-                    Update Photo
-                  </span>
                   <input
                     type="file"
                     className="hidden"
-                    onChange={onFileChange}
+                    onChange={onImgChange}
                     accept="image/*"
                   />
                 </label>
               </div>
             </div>
-
             <h2 className="font-black text-2xl text-slate-800 dark:text-white tracking-tight">
-              {user?.name || "Senior Developer"}
+              {user?.name}
             </h2>
-            <div className="flex items-center justify-center gap-2 mt-3">
-              <FaShieldAlt
-                className="text-indigo-500 dark:text-sky-400"
-                size={12}
-              />
-              <span className="text-[10px] font-black text-indigo-600 dark:text-sky-400 uppercase tracking-widest">
-                {user?.role || "Member"}
-              </span>
-            </div>
           </div>
 
-          <div className="bg-indigo-600 dark:bg-indigo-900/30 p-8 rounded-[2.5rem] text-white">
-            <h3 className="font-black text-lg mb-2">Visibility Tip</h3>
-            <p className="text-indigo-100 dark:text-indigo-300 text-sm leading-relaxed">
-              Your professional title and bio are indexed for search. Make them
-              impactful!
-            </p>
+          {/* CV Upload Card */}
+          <div className="bg-white dark:bg-slate-900 p-8 rounded-[2.5rem] border border-slate-100 dark:border-slate-800 shadow-xl">
+            <label className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest block mb-4">
+              Professional Resume
+            </label>
+            <input
+              type="file"
+              id="cv-upload"
+              className="hidden"
+              accept=".pdf"
+              onChange={onCvChange}
+            />
+            <label
+              htmlFor="cv-upload"
+              className={`flex items-center gap-4 p-4 rounded-2xl border-2 border-dashed transition-all cursor-pointer ${
+                cvFile
+                  ? "border-green-500 bg-green-50 dark:bg-green-500/5"
+                  : "border-slate-200 dark:border-slate-800 hover:border-indigo-500"
+              }`}
+            >
+              <div
+                className={`p-3 rounded-xl ${cvFile ? "bg-green-500" : "bg-indigo-600"} text-white`}
+              >
+                {cvFile ? <FaCheckCircle size={20} /> : <FaFilePdf size={20} />}
+              </div>
+              <div className="flex flex-col truncate">
+                <span className="text-xs font-black dark:text-white uppercase truncate">
+                  {cvFile ? "CV Ready" : "Upload CV"}
+                </span>
+                <span className="text-[10px] text-slate-400 truncate w-32">
+                  {cvFile ? cvFile.name : "PDF format"}
+                </span>
+              </div>
+            </label>
+            {user?.cvUrl && (
+              <a
+                href={user.cvUrl}
+                target="_blank"
+                className="mt-4 flex items-center justify-center gap-2 text-[10px] font-bold text-indigo-500 hover:text-indigo-600 transition-colors"
+              >
+                <FaExternalLinkAlt size={10} /> View Current CV
+              </a>
+            )}
           </div>
         </motion.div>
 
-        {/* Main Content: Bio & Data */}
-        <motion.div
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: 0.2 }}
-          className="lg:col-span-8 space-y-8"
-        >
-          {/* Section: Credentials */}
+        {/* Main Content */}
+        <motion.div className="lg:col-span-8 space-y-8">
           <div className="bg-white dark:bg-slate-900 p-8 rounded-[2.5rem] border border-slate-100 dark:border-slate-800 shadow-xl space-y-8">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div className="space-y-3">
-                <label className="text-[11px] font-black uppercase text-slate-400 dark:text-slate-500 ml-2 block">
-                  Full Display Name
+                <label className="text-[11px] font-black uppercase text-slate-400 ml-2 block">
+                  Full Name
                 </label>
                 <input
                   {...register("name")}
-                  className="w-full p-5 bg-slate-50 dark:bg-slate-800 border-2 border-transparent focus:border-indigo-100 dark:focus:border-indigo-900 rounded-2xl font-bold text-slate-700 dark:text-white outline-none transition-all shadow-sm"
-                  placeholder="e.g. Sameh Dheir"
+                  className="w-full p-5 bg-slate-50 dark:bg-slate-800 rounded-2xl font-bold dark:text-white outline-none focus:ring-2 ring-indigo-100 transition-all"
                 />
               </div>
-
               <div className="space-y-3">
-                <label className="text-[11px] font-black uppercase text-slate-400 dark:text-slate-500 ml-2 block">
-                  Secure Email (Verified)
+                <label className="text-[11px] font-black uppercase text-slate-400 ml-2 block">
+                  Verified Email
                 </label>
-                <div className="w-full p-5 bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl font-bold text-slate-400 dark:text-slate-600 flex items-center gap-3">
-                  <span className="truncate">{user?.email}</span>
+                <div className="w-full p-5 bg-slate-100 dark:bg-slate-950 rounded-2xl font-bold text-slate-400 truncate">
+                  {user?.email}
                 </div>
               </div>
             </div>
-
             <div className="space-y-3">
-              <label className="text-[11px] font-black uppercase text-slate-400 dark:text-slate-500 ml-2 block">
+              <label className="text-[11px] font-black uppercase text-slate-400 ml-2 block">
                 Professional Headline
               </label>
               <div className="relative">
                 <input
                   {...register("title")}
-                  className="w-full p-5 pl-14 bg-slate-50 dark:bg-slate-800 border-2 border-transparent focus:border-indigo-100 dark:focus:border-indigo-900 rounded-2xl font-black text-slate-900 dark:text-white outline-none text-lg tracking-tight transition-all"
-                  placeholder="e.g. Senior Backend Architect"
+                  className="w-full p-5 pl-14 bg-slate-50 dark:bg-slate-800 rounded-2xl font-black text-lg dark:text-white outline-none focus:ring-2 ring-indigo-100 transition-all"
                 />
-                <FaEdit className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-300 dark:text-slate-600" />
+                <FaEdit className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-300" />
               </div>
             </div>
           </div>
 
-          {/* Section: Narrative */}
           <div className="bg-white dark:bg-slate-900 p-8 rounded-[2.5rem] border border-slate-100 dark:border-slate-800 shadow-xl">
-            <div className="flex justify-between items-center mb-6">
-              <label className="text-[11px] font-black uppercase text-slate-400 dark:text-slate-500 ml-2">
-                The Narrative (Bio)
-              </label>
-              <span className="text-[10px] font-bold text-indigo-400 dark:text-sky-600 px-3 py-1 bg-indigo-50 dark:bg-sky-500/10 rounded-full">
-                Markdown Supported
-              </span>
-            </div>
+            <label className="text-[11px] font-black uppercase text-slate-400 ml-2 block mb-6">
+              The Narrative (Bio)
+            </label>
             <textarea
               {...register("bio")}
               rows={8}
-              className="w-full p-6 bg-slate-50 dark:bg-slate-800 border-2 border-transparent focus:border-indigo-100 dark:focus:border-indigo-900 rounded-[2rem] font-medium text-slate-600 dark:text-slate-300 text-sm outline-none resize-none leading-relaxed transition-all"
-              placeholder="Tell your professional story, focus on impact and tech stack..."
+              className="w-full p-6 bg-slate-50 dark:bg-slate-800/50 border border-transparent dark:border-slate-800 rounded-[2rem] font-medium text-sm leading-relaxed text-slate-600 dark:text-slate-300 outline-none focus:ring-2 ring-indigo-100 dark:focus:ring-indigo-500/30 transition-all resize-none"
             />
           </div>
         </motion.div>
-      </form>
+      </div>
     </div>
   );
 }
