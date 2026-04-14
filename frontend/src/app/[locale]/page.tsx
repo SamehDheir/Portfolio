@@ -21,7 +21,8 @@ export const metadata: Metadata = {
   ],
   openGraph: {
     title: "Sameh Dheir | Backend & Full-Stack Engineer",
-    description: "Node.js & NestJS Expert - Building scalable systems and interactive experiences",
+    description:
+      "Node.js & NestJS Expert - Building scalable systems and interactive experiences",
     url: "https://sameh-dheir.vercel.app",
     siteName: "Sameh Dheir Portfolio",
     images: [
