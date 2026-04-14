@@ -103,7 +103,7 @@ export class PostsController {
   }
 
   @ApiBearerAuth()
-  // @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @Post('webhook/linkedin')
   @HttpCode(201)
   @ApiOperation({
@@ -115,14 +115,15 @@ export class PostsController {
     @Body() linkedinData: LinkedinWebhookDto,
     @Req() req: any,
   ) {
-    return this.linkedinService.processLinkedinPost(
-      linkedinData,
-      req.user.userId,
-    );
+    const userId = req.user?.id || req.user?.userId;
+    if (!userId) {
+      throw new Error('User ID not found in request');
+    }
+    return this.linkedinService.processLinkedinPost(linkedinData, userId);
   }
 
   @ApiBearerAuth()
-  // @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @Delete('webhook/linkedin/:linkedinPostId')
   @ApiOperation({
     summary: 'Delete a LinkedIn synced post',
