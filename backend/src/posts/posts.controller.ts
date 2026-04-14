@@ -102,28 +102,25 @@ export class PostsController {
     return this.postsService.remove(id);
   }
 
-  @ApiBearerAuth()
-  @UseGuards(JwtAuthGuard)
   @Post('webhook/linkedin')
   @HttpCode(201)
   @ApiOperation({
     summary: 'Webhook endpoint for LinkedIn posts',
     description:
-      'Automatically syncs LinkedIn posts to your portfolio. Send this endpoint your LinkedIn post data.',
+      'Automatically syncs LinkedIn posts to your portfolio. Designed for automation tools like Zapier & Pipedream.',
   })
   async syncLinkedinPost(
     @Body() linkedinData: LinkedinWebhookDto,
     @Req() req: any,
   ) {
-    const userId = req.user?.id || req.user?.userId;
-    if (!userId) {
-      throw new Error('User ID not found in request');
-    }
-    return this.linkedinService.processLinkedinPost(linkedinData, userId);
+
+    const defaultUserId = process.env.DEFAULT_AUTHOR_ID || 'system';
+    return this.linkedinService.processLinkedinPost(
+      linkedinData,
+      defaultUserId,
+    );
   }
 
-  @ApiBearerAuth()
-  @UseGuards(JwtAuthGuard)
   @Delete('webhook/linkedin/:linkedinPostId')
   @ApiOperation({
     summary: 'Delete a LinkedIn synced post',

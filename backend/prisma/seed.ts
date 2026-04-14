@@ -1,31 +1,30 @@
-// prisma/seed.ts
 import { PrismaClient } from '@prisma/client';
 import { PrismaPg } from '@prisma/adapter-pg';
 import { Pool } from 'pg';
 import * as bcrypt from 'bcrypt';
 import * as dotenv from 'dotenv';
 
-// تحميل متغيرات البيئة عشان يقرأ الـ DATABASE_URL
 dotenv.config();
 
 async function main() {
-  // 1. تجهيز الاتصال يدوياً (مهم جداً لـ Prisma 7)
   const pool = new Pool({ connectionString: process.env.DATABASE_URL });
   const adapter = new PrismaPg(pool as any);
-  
-  // 2. تمرير الـ adapter للـ Client
+
   const prisma = new PrismaClient({ adapter });
 
   console.log('--- Seed started ---');
 
+  const ADMIN_ID = 'c0a80101-d6sd-2343-sdfd-2g3gsk3hgd81';
   const password = 'sameh2134$';
   const hashedPassword = await bcrypt.hash(password, 10);
 
-  // إنشاء مستخدم "سامح"
   const admin = await prisma.user.upsert({
-    where: { email: 'sameh.dheir1@gmail.com' }, 
-    update: {},
+    where: { id: ADMIN_ID },
+    update: {
+      email: 'sameh.dheir1@gmail.com',
+    },
     create: {
+      id: ADMIN_ID,
       email: 'sameh.dheir1@gmail.com',
       name: 'Sameh Dheir',
       password: hashedPassword,
@@ -38,8 +37,7 @@ async function main() {
   await pool.end();
 }
 
-main()
-  .catch((e) => {
-    console.error('❌ Seed error:', e);
-    process.exit(1);
-  });
+main().catch((e) => {
+  console.error('❌ Seed error:', e);
+  process.exit(1);
+});
