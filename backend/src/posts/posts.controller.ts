@@ -11,6 +11,7 @@ import {
   UseGuards,
   UseInterceptors,
   UploadedFile,
+  HttpCode,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import type { Express } from 'express';
@@ -25,11 +26,16 @@ import {
   ApiOperation,
 } from '@nestjs/swagger';
 import { PostQueryDto } from './dto/post-query.dto';
+import { LinkedinService } from 'src/linkedin/linkedin.service';
+import { LinkedinWebhookDto } from 'src/linkedin/dto/linkedin-webhook.dto';
 
 @ApiTags('Posts')
 @Controller('posts')
 export class PostsController {
-  constructor(private readonly postsService: PostsService) {}
+  constructor(
+    private readonly postsService: PostsService,
+    private readonly linkedinService: LinkedinService,
+  ) {}
 
   @Get()
   @ApiOperation({ summary: 'Get all posts with pagination and filters' })
@@ -94,5 +100,35 @@ export class PostsController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.postsService.remove(id);
+  }
+
+  @ApiBearerAuth()
+  // @UseGuards(JwtAuthGuard)
+  @Post('webhook/linkedin')
+  @HttpCode(201)
+  @ApiOperation({
+    summary: 'Webhook endpoint for LinkedIn posts',
+    description:
+      'Automatically syncs LinkedIn posts to your portfolio. Send this endpoint your LinkedIn post data.',
+  })
+  async syncLinkedinPost(
+    @Body() linkedinData: LinkedinWebhookDto,
+    @Req() req: any,
+  ) {
+    return this.linkedinService.processLinkedinPost(
+      linkedinData,
+      req.user.userId,
+    );
+  }
+
+  @ApiBearerAuth()
+  // @UseGuards(JwtAuthGuard)
+  @Delete('webhook/linkedin/:linkedinPostId')
+  @ApiOperation({
+    summary: 'Delete a LinkedIn synced post',
+    description: 'Remove a post that was synced from LinkedIn',
+  })
+  async deleteLinkedinPost(@Param('linkedinPostId') linkedinPostId: string) {
+    return this.linkedinService.deleteLinkedinPost(linkedinPostId);
   }
 }

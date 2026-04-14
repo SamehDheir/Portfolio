@@ -3,9 +3,10 @@ import { PostsService } from './posts.service';
 import { PostsController } from './posts.controller';
 import { PrismaModule } from 'src/prisma/prisma.module';
 import { CloudinaryModule } from 'src/cloudinary/cloudinary.module';
+import { LinkedinModule } from 'src/linkedin/linkedin.module';
 
 @Module({
-  imports: [PrismaModule, CloudinaryModule],
+  imports: [PrismaModule, CloudinaryModule, LinkedinModule],
   providers: [PostsService],
   controllers: [PostsController],
 })
