@@ -6,7 +6,10 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "analyze": "ANALYZE=true next build",
+    "profile": "NODE_DEBUG=module node --prof server.js",
+    "audit": "npm audit"
   },
   "dependencies": {
     "@google/generative-ai": "^0.24.1",

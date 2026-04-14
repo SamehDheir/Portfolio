@@ -3,17 +3,20 @@ import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { MessageSquare, X, Send, Bot } from "lucide-react";
 import { chatService } from "@/services/chat.service";
-import ReactMarkdown from 'react-markdown';
+import ReactMarkdown from "react-markdown";
 
 export default function ChatAI() {
   const [isOpen, setIsOpen] = useState(false);
   const [input, setInput] = useState("");
-  const [messages, setMessages] = useState<{ role: string; content: string }[]>([
-    {
-      role: "assistant",
-      content: "Hi! I'm Sameh's AI. How can I help you? | أهلاً بك، أنا المساعد الذكي لسامح، كيف يمكنني مساعدتك؟",
-    },
-  ]);
+  const [messages, setMessages] = useState<{ role: string; content: string }[]>(
+    [
+      {
+        role: "assistant",
+        content:
+          "Hi! I'm Sameh's AI. How can I help you? | أهلاً بك، أنا المساعد الذكي لسامح، كيف يمكنني مساعدتك؟",
+      },
+    ],
+  );
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -34,9 +37,18 @@ export default function ChatAI() {
 
     try {
       const data = await chatService.sendMessage(input);
-      setMessages((prev) => [...prev, { role: "assistant", content: data.text }]);
+      setMessages((prev) => [
+        ...prev,
+        { role: "assistant", content: data.text },
+      ]);
     } catch (error) {
-      setMessages((prev) => [...prev, { role: "assistant", content: "Service unavailable. / الخدمة غير متوفرة حالياً" }]);
+      setMessages((prev) => [
+        ...prev,
+        {
+          role: "assistant",
+          content: "Service unavailable. / الخدمة غير متوفرة حالياً",
+        },
+      ]);
     } finally {
       setIsLoading(false);
     }
@@ -51,35 +63,54 @@ export default function ChatAI() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
             className="mb-4 w-80 md:w-[350px] h-[480px] bg-white dark:bg-slate-900 rounded-3xl shadow-2xl border border-slate-100 dark:border-slate-800 flex flex-col overflow-hidden transition-colors"
+            role="dialog"
+            aria-label="AI Chat Assistant"
           >
             {/* Header */}
             <div className="p-4 bg-indigo-600 dark:bg-indigo-700 text-white flex justify-between items-center shadow-md">
               <div className="flex items-center gap-3">
-                <div className="p-1.5 bg-white/20 rounded-lg"><Bot size={18} /></div>
+                <div className="p-1.5 bg-white/20 rounded-lg">
+                  <Bot size={18} />
+                </div>
                 <p className="text-sm font-bold">Sameh's AI</p>
               </div>
-              <button onClick={() => setIsOpen(false)} className="hover:bg-white/10 p-1 rounded-full transition-colors"><X size={18} /></button>
+              <button
+                onClick={() => setIsOpen(false)}
+                className="hover:bg-white/10 p-1 rounded-full transition-colors"
+                aria-label="Close chat"
+              >
+                <X size={18} aria-hidden="true" />
+              </button>
             </div>
 
             {/* Messages Area */}
             <div className="flex-1 overflow-y-auto p-4 space-y-3 bg-slate-50/30 dark:bg-slate-950/20 custom-scrollbar">
               {messages.map((m, i) => (
-                <div key={i} className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}>
-                  <div className={`max-w-[85%] p-3 rounded-2xl text-sm shadow-sm transition-all ${
-                    m.role === "user" 
-                      ? "bg-indigo-600 dark:bg-indigo-700 text-white rounded-tr-none" 
-                      : "bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 text-slate-700 dark:text-slate-200 rounded-tl-none"
-                  }`}>
-                    <div 
-                      className={`prose prose-sm max-w-none break-words ${m.role === 'user' ? 'prose-invert text-white' : 'dark:prose-invert'}`} 
-                      style={{ direction: /[\u0600-\u06FF]/.test(m.content) ? 'rtl' : 'ltr' }}
+                <div
+                  key={i}
+                  className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}
+                >
+                  <div
+                    className={`max-w-[85%] p-3 rounded-2xl text-sm shadow-sm transition-all ${
+                      m.role === "user"
+                        ? "bg-indigo-600 dark:bg-indigo-700 text-white rounded-tr-none"
+                        : "bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 text-slate-700 dark:text-slate-200 rounded-tl-none"
+                    }`}
+                  >
+                    <div
+                      className={`prose prose-sm max-w-none break-words ${m.role === "user" ? "prose-invert text-white" : "dark:prose-invert"}`}
+                      style={{
+                        direction: /[\u0600-\u06FF]/.test(m.content)
+                          ? "rtl"
+                          : "ltr",
+                      }}
                     >
                       <ReactMarkdown>{m.content}</ReactMarkdown>
                     </div>
                   </div>
                 </div>
               ))}
-              
+
               {isLoading && (
                 <div className="flex justify-start">
                   <div className="bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 px-3 py-2 rounded-2xl rounded-tl-none shadow-sm flex gap-1">
@@ -101,8 +132,13 @@ export default function ChatAI() {
                 placeholder="Type your message..."
                 className="flex-1 bg-slate-100 dark:bg-slate-800 dark:text-white rounded-xl px-4 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500 transition-all placeholder:text-slate-400 dark:placeholder:text-slate-500"
               />
-              <button onClick={handleSend} disabled={isLoading} className="p-2 bg-indigo-600 dark:bg-indigo-700 text-white rounded-xl hover:bg-indigo-700 dark:hover:bg-indigo-600 transition-all disabled:opacity-50">
-                <Send size={16} />
+              <button
+                onClick={handleSend}
+                disabled={isLoading}
+                className="p-2 bg-indigo-600 dark:bg-indigo-700 text-white rounded-xl hover:bg-indigo-700 dark:hover:bg-indigo-600 transition-all disabled:opacity-50"
+                aria-label="Send message"
+              >
+                <Send size={16} aria-hidden="true" />
               </button>
             </div>
           </motion.div>
@@ -114,9 +150,15 @@ export default function ChatAI() {
         whileTap={{ scale: 0.95 }}
         onClick={() => setIsOpen(!isOpen)}
         className="bg-indigo-600 dark:bg-indigo-700 text-white p-4 rounded-full shadow-xl flex items-center justify-center relative border-2 border-white dark:border-slate-800 transition-colors"
+        aria-label="Open AI chat assistant"
       >
-        <MessageSquare size={26} />
-        {!isOpen && <span className="absolute -top-1 -right-1 w-3.5 h-3.5 bg-red-500 rounded-full border-2 border-white dark:border-slate-900 animate-pulse"></span>}
+        <MessageSquare size={26} aria-hidden="true" />
+        {!isOpen && (
+          <span
+            className="absolute -top-1 -right-1 w-3.5 h-3.5 bg-red-500 rounded-full border-2 border-white dark:border-slate-900 animate-pulse"
+            aria-hidden="true"
+          ></span>
+        )}
       </motion.button>
     </div>
   );

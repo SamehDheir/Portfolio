@@ -2,86 +2,86 @@
   "Navbar": {
     "home": "الرئيسية",
     "projects": "المشاريع",
-    "skills": "المهارات",
+    "skills": "الخبرات",
     "blog": "المدونة",
     "lang": "العربية",
     "contact": "تواصل معي"
   },
   "Hero": {
-    "badge": "بناء الأنظمة وتوسيعها",
-    "titleStart": "بناء",
-    "titleMiddle": "تجارب رقمية",
-    "titleEnd": "تفاعلية",
-    "description": "أنا سامح ضهير، مطور ويب متكامل (Full Stack) متخصص في بناء البنى التحتية البرمجية القوية وواجهات المستخدم السلسة",
+    "badge": "هندسة الأنظمة وقابلية التوسع",
+    "titleStart": "هندسة",
+    "titleMiddle": "حلول برمجية",
+    "titleEnd": "متكاملة",
+    "description": "أنا سامح ضهير، مهندس برمجيات (Full Stack) وباحث ماجستير، متخصص في تصميم الأنظمة الخلفية المعقدة (Backend Architect) ودمج تقنيات الذكاء الاصطناعي",
     "seeProjects": "عرض المشاريع",
     "downloadCV": "السيرة الذاتية",
-    "expertBadge": "خبير تقني",
-    "expertTitle": "مطور أول أنظمة"
+    "expertBadge": "ماجستير IT",
+    "expertTitle": "معماري أنظمة أول"
   },
   "Projects": {
-    "badge": "حلول برمجية مثبتة",
+    "badge": "حلول هندسية متقدمة",
     "title": "أبرز",
-    "titleAccent": "الأعمال",
-    "subtitle": "مجموعة مختارة من بنى الأنظمة الخلفية والمنصات المتكاملة التي قمت بتطويرها",
-    "viewFullPortfolio": "عرض جميع المشاريع",
-    "exploreGithub": "استكشف المزيد على GitHub",
-    "viewLive": "عرض مباشر",
-    "exploreGithubCode": "كود"
+    "titleAccent": "الأنظمة",
+    "subtitle": "مجموعة مختارة من بنى الأنظمة الخلفية والمنصات المتكاملة التي قمت بهندستها وتطويرها",
+    "viewFullPortfolio": "عرض كافة الأعمال",
+    "exploreGithub": "استكشف الكود المصدري على GitHub",
+    "viewLive": "عرض حي",
+    "exploreGithubCode": "المنطق البرمجي"
   },
   "Skills": {
-    "badge": "الخبرات التقنية",
-    "title": "المهارات",
-    "titleAccent": "البرمجية",
-    "backend": "الخلفية (Backend)",
-    "frontend": "الأمامية (Frontend)",
-    "devops": "العمليات (DevOps)",
-    "tools": "الأدوات",
+    "badge": "الحزمة التقنية",
+    "title": "الكفاءات",
+    "titleAccent": "الأساسية",
+    "backend": "الأنظمة الخلفية (Backend)",
+    "frontend": "الواجهات الأمامية (Frontend)",
+    "devops": "الأتمتة (DevOps)",
+    "tools": "أدوات الهندسة",
     "noSkills": "لم تضف مهارات بعد"
   },
   "Blog": {
     "badge": "قاعدة المعرفة",
     "title": "آخر",
     "titleAccent": "المقالات",
-    "viewArchive": "الأرشيف",
-    "continueReading": "تابع القراءة",
-    "noPostsFound": "لم يتم العثور على مقالات"
+    "viewArchive": "الأرشيف التقني",
+    "continueReading": "تابع التحليل",
+    "noPostsFound": "لا توجد مقالات حالياً"
   },
   "BlogContent": {
     "loading": "جاري تحميل المقال",
     "notFound": "المقال غير موجود",
     "backToFeed": "العودة للمقالات",
     "writtenBy": "كُتب بواسطة",
-    "followInsights": "تابع المستجدات"
+    "followInsights": "تابع المستجدات التقنية"
   },
   "Archive": {
-    "title": "الأرشيف",
-    "subtitle": "تدوينات تقنية، هندسة أنظمة، وسجلات التطوير",
-    "searchPlaceholder": "ابحث بالعنوان",
-    "allCategories": "الكل",
-    "readMore": "اقرأ المزيد"
+    "title": "الأرشيف التقني",
+    "subtitle": "تحليلات هندسية، بنى الأنظمة، وسجلات التطوير",
+    "searchPlaceholder": "ابحث عن موضوع",
+    "allCategories": "جميع التصنيفات",
+    "readMore": "تعمق في القراءة"
   },
   "Contact": {
-    "badge": "تواصل معي",
+    "badge": "تواصل مهني",
     "titleStart": "لنصنع",
-    "titleMiddle": "شيئاً",
-    "titleAccent": "عظيماً",
-    "description": "لديك مشروع في بالك أو ترغب في الحديث عن هندسة الأنظمة؟ بريدي متاح دائماً",
-    "labelName": "الأسم",
+    "titleMiddle": "حلولاً",
+    "titleAccent": "مبتكرة",
+    "description": "هل تفكر في بناء بنية نظام قوية أو تحتاج إلى استشارة تقنية ؟ بريدي متاح لمناقشة أفكارك",
+    "labelName": "الاسم الكامل",
     "placeholderName": "سامح ضهير",
-    "labelEmail": "البريد الإلكتروني",
-    "labelMessage": "الرسالة",
-    "placeholderMessage": "حدثني عن مشروعك",
-    "btnSend": "إرسال الرسالة",
+    "labelEmail": "البريد الإلكتروني المهني",
+    "labelMessage": "تفاصيل المشروع",
+    "placeholderMessage": "حدثني عن التحديات التقنية في مشروعك",
+    "btnSend": "بدأ التواصل",
     "btnLoading": "جاري الإرسال",
-    "btnSuccess": "تم الإرسال!",
-    "successMessage": "تم إرسال الرسالة بنجاح! سأتواصل معك قريباً",
-    "errorMessage": "فشل إرسال الرسالة يرجى المحاولة مرة أخرى"
+    "btnSuccess": "تم الإرسال بنجاح!",
+    "successMessage": "وصلت رسالتك! سأقوم بالرد عليك في أقرب وقت ممكن",
+    "errorMessage": "فشل الإرسال، يرجى المحاولة مرة أخرى"
   },
   "Footer": {
     "rights": "جميع الحقوق محفوظة",
-    "tagline": "هندسة البرمجيات المتكاملة ودمج الذكاء الاصطناعي",
+    "tagline": "هندسة البرمجيات المتكاملة • خبير دمج الذكاء الاصطناعي",
     "admin": "لوحة التحكم",
-    "projectsLink": "المشاريع",
+    "projectsLink": "الأنظمة",
     "blogLink": "المدونة"
   }
 }

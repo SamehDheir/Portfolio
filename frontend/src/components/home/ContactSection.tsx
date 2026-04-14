@@ -22,7 +22,6 @@ export default function ContactSection() {
     formState: { errors },
   } = useForm();
 
-
   const onSubmit = async (data: any) => {
     setStatus("loading");
     try {
@@ -76,9 +75,13 @@ export default function ContactSection() {
               <a
                 href="mailto:sameh.dheir1@gmail.com"
                 className="flex items-center gap-4 text-slate-900 dark:text-white font-bold hover:text-sky-600 dark:hover:text-sky-400 transition-colors group rtl:flex-row-reverse rtl:justify-end"
+                aria-label="Send me an email at sameh.dheir1@gmail.com"
               >
                 <div className="w-12 h-12 bg-slate-50 dark:bg-slate-900 rounded-2xl flex items-center justify-center group-hover:bg-sky-50 dark:group-hover:bg-sky-900/50 transition-colors border border-transparent dark:border-slate-800">
-                  <FaEnvelope className="text-sky-600 dark:text-sky-400" />
+                  <FaEnvelope
+                    className="text-sky-600 dark:text-sky-400"
+                    aria-hidden="true"
+                  />
                 </div>
                 sameh.dheir1@gmail.com
               </a>
@@ -87,15 +90,17 @@ export default function ContactSection() {
                   href="https://linkedin.com/in/sameh-dheir/"
                   target="_blank"
                   className="w-12 h-12 bg-slate-900 dark:bg-sky-600 text-white rounded-2xl flex items-center justify-center hover:bg-sky-600 dark:hover:bg-sky-500 transition-all shadow-lg dark:shadow-none"
+                  aria-label="Visit my LinkedIn profile"
                 >
-                  <FaLinkedin size={20} />
+                  <FaLinkedin size={20} aria-hidden="true" />
                 </a>
                 <a
                   href="https://github.com/SamehDheir"
                   target="_blank"
                   className="w-12 h-12 bg-slate-900 dark:bg-slate-800 text-white rounded-2xl flex items-center justify-center hover:bg-sky-600 dark:hover:bg-slate-700 transition-all shadow-lg dark:shadow-none"
+                  aria-label="Visit my GitHub profile"
                 >
-                  <FaGithub size={20} />
+                  <FaGithub size={20} aria-hidden="true" />
                 </a>
               </div>
             </div>

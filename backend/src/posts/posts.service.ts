@@ -24,7 +24,7 @@ export class PostsService {
 
       await this.cloudinary.deleteFile(publicId);
       console.log(`✅ Deleted from Cloudinary: ${publicId}`);
-    } catch (err) {
+    } catch (err ) {
       console.error('❌ Cloudinary delete error:', err.message);
     }
   }
@@ -46,7 +46,6 @@ export class PostsService {
     let coverImageUrl = data.coverImage;
 
     if (file) {
-      // رفع الصورة لمجلد blog لترتيب الملفات
       const uploadRes = await this.cloudinary.uploadFile(
         file,
         'portfolio/blog',

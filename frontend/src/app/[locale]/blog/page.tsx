@@ -20,7 +20,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     openGraph: {
       title: `${t("title")} | Sameh Dheir`,
       description: t("subtitle"),
-      url: `https://sameh.dev/${locale}/blog`,
+      url: `https://sameh-dheir.vercel.app/${locale}/blog`,
       type: "website",
     },
   };
@@ -28,6 +28,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function Page({ params }: Props) {
   const { locale } = await params;
-  
+
   return <BlogArchivePage />;
-} 
+}

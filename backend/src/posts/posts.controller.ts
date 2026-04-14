@@ -13,6 +13,7 @@ import {
   UploadedFile,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
+import type { Express } from 'express';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { CreatePostDto } from './dto/create-post.dto';
 import { PostsService } from './posts.service';
@@ -57,10 +58,8 @@ export class PostsController {
     @Req() req: any,
     @UploadedFile() file: Express.Multer.File,
   ) {
-    // التعامل مع الـ Boolean اللي بيوصل من الـ FormData كـ String
     const isPublished = String(createPostDto.published) === 'true';
 
-    // نمرر الـ file للـ service وهي بترفع وبتاخد الـ URL
     return this.postsService.create(
       { ...createPostDto, published: isPublished },
       file,

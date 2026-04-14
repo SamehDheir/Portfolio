@@ -32,7 +32,6 @@ export class ProjectsService {
 
           return this.cloudinary.deleteFile(publicId);
         } catch (error) {
-          console.error(`خطأ في معالجة رابط Cloudinary: ${url}`, error);
           return Promise.resolve();
         }
       });

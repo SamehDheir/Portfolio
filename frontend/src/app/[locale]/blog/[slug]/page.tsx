@@ -5,7 +5,8 @@ type Props = {
   params: Promise<{ slug: string; locale: string }>;
 };
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "https://portfolio-hyo9.onrender.com";
+const API_BASE =
+  process.env.NEXT_PUBLIC_API_URL || "https://portfolio-hyo9.onrender.com";
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug, locale } = await params;
@@ -29,7 +30,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         ? "مقالات تقنية في هندسة البرمجيات وتطوير الويب والذكاء الاصطناعي بواسطة سامح ضهير"
         : "Technical insights on software architecture, web development, and AI by Sameh Dheir");
 
-    const imageUrl = post.coverImage || ""; 
+    const imageUrl = post.coverImage || "";
 
     return {
       title: `${title} | ${siteName}`,
@@ -44,7 +45,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       openGraph: {
         title: title,
         description: description,
-        url: `https://sameh.dev/${locale}/blog/${slug}`,
+        url: `https://sameh-dheir.vercel.app/${locale}/blog/${slug}`,
         siteName: siteName,
         images: imageUrl
           ? [

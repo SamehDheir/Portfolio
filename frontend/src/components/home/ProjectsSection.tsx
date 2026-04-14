@@ -71,15 +71,17 @@ export default function ProjectsSection() {
                       href={project.github}
                       target="_blank"
                       className="p-4 bg-white dark:bg-slate-800 rounded-2xl text-slate-900 dark:text-white hover:bg-sky-600 hover:text-white transition-all transform hover:-translate-y-2 shadow-xl"
+                      aria-label={`View ${project.title} on GitHub`}
                     >
-                      <FaGithub size={24} />
+                      <FaGithub size={24} aria-hidden="true" />
                     </a>
                     <a
                       href={project.link}
                       target="_blank"
                       className="p-4 bg-white dark:bg-slate-800 rounded-2xl text-slate-900 dark:text-white hover:bg-red-500 hover:text-white transition-all transform hover:-translate-y-2 shadow-xl"
+                      aria-label={`View ${project.title} live`}
                     >
-                      <FaExternalLinkAlt size={22} />
+                      <FaExternalLinkAlt size={22} aria-hidden="true" />
                     </a>
                   </div>
                 </div>

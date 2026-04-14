@@ -95,7 +95,7 @@ export default function DashboardShell({
             </div>
             <div>
               <h1 className="text-lg font-black text-slate-900 dark:text-white leading-tight transition-colors">
-                Sameh.Dev
+                sameh-dheir.vercel.app
               </h1>
               <span className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest">
                 Admin Engine

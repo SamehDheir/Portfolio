@@ -11,24 +11,47 @@
   --background: #ffffff;
   --foreground: #0f172a;
   --card-bg: #ffffff;
+  color-scheme: light;
 }
 
 .dark {
-  --background: #020617 !important; /* Slate 950 */
+  --background: #020617 !important;
   --foreground: #f8fafc !important;
   --card-bg: #0f172a !important;
+  color-scheme: dark;
 }
 
 @layer base {
   html {
     background-color: var(--background);
     color: var(--foreground);
+    scroll-behavior: smooth;
   }
 
   body {
     background-color: var(--background);
     color: var(--foreground);
-    @apply antialiased transition-colors duration-300;
+    @apply antialiased;
+    /* Optimize transition for color changes */
+    transition: background-color 0.2s ease, color 0.2s ease;
+  }
+
+  /* Improve button focus states for accessibility */
+  button:focus-visible,
+  a:focus-visible,
+  input:focus-visible {
+    outline: 2px solid #4f46e5;
+    outline-offset: 2px;
+  }
+
+  /* Improve link visibility */
+  a {
+    @apply text-indigo-600 dark:text-indigo-400;
+    transition: color 0.2s ease;
+  }
+  
+  a:hover {
+    @apply text-indigo-700 dark:text-indigo-300;
   }
 }
 
@@ -37,4 +60,16 @@
 
 button {
   cursor: pointer;
+}
+
+/* Prefers reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

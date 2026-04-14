@@ -117,9 +117,15 @@ export default function Navbar() {
 
             <button
               onClick={toggleLanguage}
-              className={`flex items-center gap-2 px-4 py-2 rounded-xl border border-slate-100 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 ${isAr ? "text-[13px]" : "text-[11px]"}`}
+              className={`flex items-center gap-2 px-4 py-2 rounded-xl border border-slate-100 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-slate-900 ${isAr ? "text-[13px]" : "text-[11px]"}`}
+              aria-label={`Change language to ${locale === "en" ? "Arabic" : "English"}`}
+              title={`Switch to ${locale === "en" ? "Arabic" : "English"}`}
             >
-              <Languages size={16} className="text-indigo-600" />
+              <Languages
+                size={16}
+                className="text-indigo-600"
+                aria-hidden="true"
+              />
               {t("lang")}
             </button>
 
@@ -137,15 +143,23 @@ export default function Navbar() {
             <ThemeToggle />
             <button
               onClick={toggleLanguage}
-              className="p-2 text-slate-600 dark:text-slate-400"
+              className="p-2 text-slate-600 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 rounded-lg transition-colors"
+              aria-label={`Change language to ${locale === "en" ? "Arabic" : "English"}`}
+              title={`Switch to ${locale === "en" ? "Arabic" : "English"}`}
             >
-              <Languages size={20} />
+              <Languages size={20} aria-hidden="true" />
             </button>
             <button
-              className="text-slate-900 dark:text-white p-2"
+              className="text-slate-900 dark:text-white p-2 hover:text-indigo-600 dark:hover:text-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 rounded-lg transition-colors"
               onClick={() => setIsOpen(!isOpen)}
+              aria-label={isOpen ? "Close menu" : "Open menu"}
+              aria-expanded={isOpen}
             >
-              {isOpen ? <X size={24} /> : <Menu size={24} />}
+              {isOpen ? (
+                <X size={24} aria-hidden="true" />
+              ) : (
+                <Menu size={24} aria-hidden="true" />
+              )}
             </button>
           </div>
         </div>
@@ -159,6 +173,8 @@ export default function Navbar() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
             className="absolute top-24 left-4 right-4 bg-white/95 dark:bg-slate-900/95 backdrop-blur-2xl border border-slate-100 dark:border-slate-800 rounded-[2.5rem] shadow-2xl p-8 md:hidden z-50"
+            role="navigation"
+            aria-label="Mobile navigation menu"
           >
             <div className="flex flex-col gap-6 text-center">
               {navLinks.map((link) => (

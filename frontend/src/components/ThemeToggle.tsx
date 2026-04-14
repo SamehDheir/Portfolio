@@ -11,12 +11,21 @@ export default function ThemeToggle() {
   useEffect(() => setMounted(true), []);
   if (!mounted) return null;
 
+  const isLight = theme === "light";
+
   return (
     <button
-      onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-      className="p-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 transition-all"
+      onClick={() => setTheme(isLight ? "dark" : "light")}
+      className="p-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-all focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-slate-900"
+      aria-label={isLight ? "Switch to dark theme" : "Switch to light theme"}
+      aria-pressed={!isLight}
+      title={isLight ? "Switch to dark theme" : "Switch to light theme"}
     >
-      {theme === "dark" ? <Sun size={20} /> : <Moon size={20} />}
+      {isLight ? (
+        <Moon size={20} aria-hidden="true" />
+      ) : (
+        <Sun size={20} aria-hidden="true" />
+      )}
     </button>
   );
 }

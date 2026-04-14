@@ -12,7 +12,11 @@ import { motion } from "framer-motion";
 export default function LoginPage() {
   const router = useRouter();
 
-  const { register, handleSubmit, formState: { errors } } = useForm<LoginInput>({
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginInput>({
     resolver: zodResolver(loginSchema),
   });
 
@@ -21,7 +25,7 @@ export default function LoginPage() {
     onSuccess: (data) => {
       localStorage.setItem("token", data.access_token);
       toast.success("Welcome back, Sameh!");
-      router.push("/dashboard"); 
+      router.push("/dashboard");
     },
     onError: (error: any) => {
       const message = error.response?.data?.message || "Invalid credentials";
@@ -35,7 +39,7 @@ export default function LoginPage() {
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-50 dark:bg-slate-950 px-4 transition-colors duration-500">
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         className="w-full max-w-md space-y-8 rounded-[2rem] bg-white dark:bg-slate-900 p-10 shadow-xl dark:shadow-2xl border border-slate-100 dark:border-slate-800"
@@ -59,14 +63,18 @@ export default function LoginPage() {
               <input
                 {...register("email")}
                 type="email"
-                placeholder="admin@sameh.dev"
+                placeholder="admin@sameh-dheir.vercel.app"
                 className={`w-full rounded-2xl border bg-slate-50 dark:bg-slate-800/50 px-4 py-3.5 text-sm font-bold transition-all focus:outline-none focus:ring-2 ${
-                  errors.email 
-                    ? "border-red-500 focus:ring-red-200 dark:focus:ring-red-900/30" 
+                  errors.email
+                    ? "border-red-500 focus:ring-red-200 dark:focus:ring-red-900/30"
                     : "border-slate-200 dark:border-slate-700 dark:text-white focus:border-sky-500 focus:ring-sky-500/10"
                 }`}
               />
-              {errors.email && <p className="mt-1.5 text-xs font-bold text-red-500 ml-1">{errors.email.message}</p>}
+              {errors.email && (
+                <p className="mt-1.5 text-xs font-bold text-red-500 ml-1">
+                  {errors.email.message}
+                </p>
+              )}
             </div>
 
             {/* Password Field */}
@@ -79,12 +87,16 @@ export default function LoginPage() {
                 type="password"
                 placeholder="••••••••"
                 className={`w-full rounded-2xl border bg-slate-50 dark:bg-slate-800/50 px-4 py-3.5 text-sm font-bold transition-all focus:outline-none focus:ring-2 ${
-                  errors.password 
-                    ? "border-red-500 focus:ring-red-200 dark:focus:ring-red-900/30" 
+                  errors.password
+                    ? "border-red-500 focus:ring-red-200 dark:focus:ring-red-900/30"
                     : "border-slate-200 dark:border-slate-700 dark:text-white focus:border-sky-500 focus:ring-sky-500/10"
                 }`}
               />
-              {errors.password && <p className="mt-1.5 text-xs font-bold text-red-500 ml-1">{errors.password.message}</p>}
+              {errors.password && (
+                <p className="mt-1.5 text-xs font-bold text-red-500 ml-1">
+                  {errors.password.message}
+                </p>
+              )}
             </div>
           </div>
 
@@ -97,7 +109,7 @@ export default function LoginPage() {
               {isPending ? "Authenticating..." : "Sign In"}
             </span>
             {isPending && (
-              <motion.div 
+              <motion.div
                 className="absolute inset-0 bg-sky-500/20"
                 initial={{ x: "-100%" }}
                 animate={{ x: "100%" }}
