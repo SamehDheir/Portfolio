@@ -186,7 +186,7 @@ export default function BlogContent({ slug }: { slug: string }) {
                     {post.author?.name || "Sameh Dheir"}
                   </p>
                   <p className="font-bold text-slate-400 dark:text-slate-500 italic text-sm">
-                    {post.author?.title || "Senior Backend & AI Engineer"}
+                    {post.author?.title || "Backend & AI Engineer"}
                   </p>
                 </div>
               </div>

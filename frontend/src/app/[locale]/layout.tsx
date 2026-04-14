@@ -36,16 +36,16 @@ export const revalidate = 3600; // Revalidate every hour
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://sameh-dheir.vercel.app"),
-  title: "Sameh Dheir - Senior Full Stack Engineer | NestJS & Next.js Expert",
+  title: "Sameh Dheir - Backend & Full-Stack Engineer | Node.js & NestJS",
   description:
-    "Full Stack Engineer specializing in NestJS, Next.js, TypeScript, and scalable architecture. Building high-performance web applications and modern software solutions.",
+    "Backend & Full-Stack Engineer specializing in Node.js, NestJS, TypeScript, and scalable architecture. Building high-performance systems and modern software solutions.",
   keywords: [
+    "Backend Engineer",
     "Full Stack Engineer",
+    "Node.js",
     "NestJS",
-    "Next.js",
-    "React",
     "TypeScript",
-    "Backend",
+    "Backend Development",
     "Frontend",
     "Software Architect",
     "Web Development",
@@ -88,9 +88,9 @@ export const metadata: Metadata = {
     alternateLocale: ["ar_SA"],
     url: "https://sameh-dheir.vercel.app",
     siteName: "Sameh Dheir - Portfolio",
-    title: "Sameh Dheir | Senior Full Stack Engineer",
+    title: "Sameh Dheir | Backend & Full-Stack Engineer",
     description:
-      "Specializing in building high-performance systems, AI-driven platforms, and scalable architecture",
+      "Backend & Full-Stack Engineer specializing in Node.js, NestJS, and building scalable, high-performance systems",
     images: [
       {
         url: "/og-image.png",
@@ -110,9 +110,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Sameh Dheir | Senior Full Stack Engineer",
+    title: "Sameh Dheir | Backend & Full-Stack Engineer",
     description:
-      "Building robust backend architectures and seamless user interfaces",
+      "Node.js & NestJS specialist building robust backend architectures and seamless user interfaces",
     images: ["/og-image.png"],
     creator: "@sameh_dev",
   },

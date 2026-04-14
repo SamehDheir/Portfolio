@@ -205,7 +205,7 @@ export default function DashboardPage() {
           <div className="relative z-10 h-full flex flex-col justify-between">
             <div>
               <div className="inline-block px-4 py-1 bg-indigo-500 dark:bg-sky-600 rounded-full text-[10px] font-black uppercase tracking-widest mb-4">
-                Senior Insights
+                Mid Insights
               </div>
               <h2 className="text-2xl font-black mb-4 group-hover:text-indigo-400 dark:group-hover:text-sky-300 transition-colors">
                 Architecture Matters.

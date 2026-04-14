@@ -167,7 +167,7 @@ export default function DashboardShell({
                 {user?.name || "Sameh Dheir"}
               </p>
               <p className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase truncate">
-                {user?.title || "Senior Developer"}
+                {user?.title || "Developer"}
               </p>
             </div>
           </Link>

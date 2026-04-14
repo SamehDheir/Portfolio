@@ -7,20 +7,21 @@ import SkillsSection from "@/components/home/SkillsSection";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Sameh Dheir | Senior Full-Stack Developer & Software Architect",
+  title: "Sameh Dheir | Backend & Full-Stack Engineer | Node.js & NestJS",
   description:
-    "Specializing in building high-performance systems, AI-driven platforms, and scalable backend architectures using NestJS, Node.js, and Python",
+    "Specializing in building high-performance systems and scalable backend architectures using Node.js, NestJS, TypeScript, and modern web technologies",
   keywords: [
     "Sameh Dheir",
-    "Full Stack Developer",
     "Backend Engineer",
+    "Full Stack Engineer",
+    "Node.js Expert",
     "NestJS Expert",
     "Software Architect",
     "Portfolio",
   ],
   openGraph: {
-    title: "Sameh Dheir | Portfolio",
-    description: "Architecture & Scale - Building Interactive Experiences",
+    title: "Sameh Dheir | Backend & Full-Stack Engineer",
+    description: "Node.js & NestJS Expert - Building scalable systems and interactive experiences",
     url: "https://sameh-dheir.vercel.app",
     siteName: "Sameh Dheir Portfolio",
     images: [
@@ -36,9 +37,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Sameh Dheir | Senior Full-Stack Developer",
+    title: "Sameh Dheir | Backend & Full-Stack Engineer",
     description:
-      "Building robust backend architectures and seamless user interfaces",
+      "Node.js & NestJS specialist building robust backend architectures and modern web applications",
     images: ["/og-image.png"],
   },
 };

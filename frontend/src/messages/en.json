@@ -12,11 +12,11 @@
     "titleStart": "Engineering",
     "titleMiddle": "Scalable",
     "titleEnd": "Systems",
-    "description": "Senior Full-Stack Engineer and IT Master's student, specialized in architecting high-performance backends with NestJS and integrating advanced AI solutions.",
+    "description": "Full-Stack Engineer and IT Master's student, specialized in architecting high-performance backends with NestJS and integrating advanced AI solutions.",
     "seeProjects": "EXPLORE WORK",
     "downloadCV": "RESUME",
     "expertBadge": "MASTER'S IN IT",
-    "expertTitle": "Senior Architect"
+    "expertTitle": "Architect"
   },
   "Projects": {
     "badge": "ENGINEERING EXCELLENCE",
@@ -65,7 +65,7 @@
     "titleStart": "Let's Engineer",
     "titleMiddle": "The",
     "titleAccent": "Future",
-    "description": "Looking for a robust system architecture or a senior perspective on your next project? Let's discuss scaling your ideas.",
+    "description": "Looking for a robust system architecture or a perspective on your next project? Let's discuss scaling your ideas.",
     "labelName": "Full Name",
     "placeholderName": "Enter your name",
     "labelEmail": "Professional Email",
@@ -79,7 +79,7 @@
   },
   "Footer": {
     "rights": "ALL RIGHTS RESERVED",
-    "tagline": "SENIOR BACKEND ENGINEER • AI INTEGRATION SPECIALIST",
+    "tagline": "BACKEND ENGINEER • AI INTEGRATION SPECIALIST",
     "admin": "DASHBOARD",
     "projectsLink": "Systems",
     "blogLink": "Writings"
