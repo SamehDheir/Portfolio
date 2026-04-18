@@ -61,7 +61,10 @@ export class ChatService {
       include: {
         projects: { select: { title: true, description: true, techStack: true } },
         skills: { select: { name: true, category: true } },
-        posts: { where: { published: true }, select: { title: true, category: true } },
+        posts: { 
+          where: { published: true }, 
+          select: { content: true, category: true, slug: true } 
+        },
       },
     });
 
@@ -69,11 +72,15 @@ export class ChatService {
 
     const projectsStr = user.projects.map(p => `- **${p.title}**: ${p.description} (Stack: ${p.techStack.join(', ')})`).join('\n');
     const skillsStr = user.skills.map(s => `${s.name} (${s.category})`).join(', ');
-    const postsStr = user.posts.map(p => `- ${p.title} [Topic: ${p.category}]`).join('\n');
+    
+    const postsStr = user.posts.map(p => {
+      const summary = p.content.substring(0, 100).replace(/\n/g, ' ') + '...';
+      return `- Article [Topic: ${p.category}]: "${summary}" (Slug: ${p.slug})`;
+    }).join('\n');
 
     this.cachedContext = `
       [BIO]
-      ${user.bio}
+      ${user.bio || 'Professional Full-stack Developer'}
 
       [TECHNICAL SKILLS]
       ${skillsStr}
@@ -81,7 +88,7 @@ export class ChatService {
       [PORTFOLIO PROJECTS]
       ${projectsStr}
 
-      [PUBLISHED ARTICLES]
+      [PUBLISHED ARTICLES SUMMARIES]
       ${postsStr}
     `;
 

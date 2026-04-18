@@ -39,7 +39,6 @@ export const PostModal = React.memo(
     } = useForm<PostFormValues>({
       resolver: zodResolver(postSchema) as any,
       defaultValues: {
-        title: selectedPost?.title || "",
         content: selectedPost?.content || "",
         category: selectedPost?.category || "Backend",
         isPublished: selectedPost?.published || true,
@@ -64,7 +63,6 @@ export const PostModal = React.memo(
 
       try {
         const fd = new FormData();
-        fd.append("title", data.title);
         fd.append("content", data.content);
         fd.append("category", data.category);
         fd.append("published", String(data.isPublished));
@@ -140,25 +138,6 @@ export const PostModal = React.memo(
 
             <div className="flex-1 overflow-y-auto p-10 custom-scrollbar grid grid-cols-1 lg:grid-cols-12 gap-12">
               <div className="lg:col-span-8 space-y-8">
-                <input
-                  {...register("title")}
-                  className={`w-full text-4xl font-black border-none outline-none bg-transparent tracking-tighter transition-all ${
-                    errors.title
-                      ? "text-red-500 placeholder:text-red-300 border-b-2 border-red-500/50"
-                      : "placeholder:text-slate-200 dark:placeholder:text-slate-800 text-slate-900 dark:text-white"
-                  }`}
-                  placeholder="Article title..."
-                />
-                {errors.title && (
-                  <motion.p
-                    initial={{ opacity: 0, y: -10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="text-red-500 text-[10px] font-black uppercase tracking-[0.2em] mt-2"
-                  >
-                    {errors.title.message}
-                  </motion.p>
-                )}
-
                 <div className="flex flex-col space-y-2 group">
                   <textarea
                     {...register("content")}

@@ -27,7 +27,7 @@ export const PostRow = React.memo(
               <img
                 src={post.coverImage}
                 className="object-cover w-full h-full"
-                alt={post.title}
+                alt="Post cover"
                 loading="lazy"
               />
             ) : (
@@ -38,7 +38,8 @@ export const PostRow = React.memo(
           </div>
           <div>
             <div className="font-black text-xl text-slate-800 dark:text-slate-200 group-hover:text-indigo-600 dark:group-hover:text-sky-400 transition-colors line-clamp-1 italic">
-              {post.title}
+              {post.content?.substring(0, 50) +
+                (post.content?.length > 50 ? "..." : "") || "Untitled Post"}
             </div>
             <div className="text-[11px] font-bold text-slate-400 mt-1 flex items-center gap-2 uppercase tracking-tighter">
               <ClockIcon className="w-4 h-4 text-indigo-400" />

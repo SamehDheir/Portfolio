@@ -12,6 +12,7 @@ import {
   UseInterceptors,
   UploadedFile,
   HttpCode,
+  BadRequestException,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import type { Express } from 'express';
@@ -62,7 +63,7 @@ export class PostsController {
   async create(
     @Body() createPostDto: CreatePostDto,
     @Req() req: any,
-    @UploadedFile() file: Express.Multer.File,
+    @UploadedFile() file?: Express.Multer.File,
   ) {
     const isPublished = String(createPostDto.published) === 'true';
 
@@ -83,6 +84,10 @@ export class PostsController {
     @Body() updatePostDto: UpdatePostDto,
     @UploadedFile() file?: Express.Multer.File,
   ) {
+    if (!id) {
+      throw new BadRequestException('Post ID is required');
+    }
+
     const isPublished =
       updatePostDto.published !== undefined
         ? String(updatePostDto.published) === 'true'
@@ -113,7 +118,6 @@ export class PostsController {
     @Body() linkedinData: LinkedinWebhookDto,
     @Req() req: any,
   ) {
-
     const defaultUserId = process.env.DEFAULT_AUTHOR_ID || 'system';
     return this.linkedinService.processLinkedinPost(
       linkedinData,

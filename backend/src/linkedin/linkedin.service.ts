@@ -12,35 +12,24 @@ export class LinkedinService {
 
   async processLinkedinPost(webhookData: LinkedinWebhookDto, userId: string) {
     try {
-      this.logger.log(`Processing LinkedIn post: ${webhookData.articleTitle}`);
-
       const existingPost = await this.prisma.post.findFirst({
         where: { linkedinPostId: webhookData.linkedinPostId },
       });
 
-      if (existingPost) {
-        this.logger.warn(
-          `Post with LinkedIn ID ${webhookData.linkedinPostId} already exists`,
-        );
+      if (existingPost)
         throw new BadRequestException('This post already exists');
-      }
 
       const slug = await this.generateUniqueSlug(webhookData.articleTitle);
 
-      let category: Category = Category.Others;
-      if (
-        webhookData.category &&
-        Object.values(Category).includes(webhookData.category as Category)
-      ) {
-        category = webhookData.category as Category;
-      }
+      const finalContent = webhookData.articleContent
+        ? `## ${webhookData.articleTitle}\n\n${webhookData.articleContent}`
+        : webhookData.articleTitle;
 
       const post = await this.prisma.post.create({
         data: {
-          title: webhookData.articleTitle,
           slug,
-          content: webhookData.articleContent || webhookData.articleTitle,
-          category,
+          content: finalContent,
+          category: (webhookData.category as Category) || Category.Others,
           tags: webhookData.tags || [],
           published: true,
           linkedinPostId: webhookData.linkedinPostId,
@@ -49,8 +38,6 @@ export class LinkedinService {
           author: { connect: { id: userId } },
         },
       });
-
-      this.logger.log(`✅ Successfully created post from LinkedIn: ${post.id}`);
       return post;
     } catch (error) {
       const errorMessage =
@@ -60,11 +47,13 @@ export class LinkedinService {
     }
   }
 
-  private async generateUniqueSlug(title: string): Promise<string> {
-    const baseSlug = slugify(title, { lower: true, strict: true });
-    let slug = baseSlug;
+  private async generateUniqueSlug(text: string): Promise<string> {
+    const baseSlug = slugify(text.substring(0, 50), {
+      lower: true,
+      strict: true,
+    });
+    let slug = baseSlug || `post-${Date.now()}`;
     let counter = 1;
-
     while (await this.prisma.post.findUnique({ where: { slug } })) {
       slug = `${baseSlug}-${counter}`;
       counter++;

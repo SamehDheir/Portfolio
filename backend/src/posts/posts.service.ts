@@ -24,13 +24,19 @@ export class PostsService {
 
       await this.cloudinary.deleteFile(publicId);
       console.log(`✅ Deleted from Cloudinary: ${publicId}`);
-    } catch (err ) {
+    } catch (err) {
       console.error('❌ Cloudinary delete error:', err.message);
     }
   }
 
-  private async generateUniqueSlug(title: string): Promise<string> {
-    const baseSlug = slugify(title, { lower: true, strict: true });
+  private async generateUniqueSlug(content: string): Promise<string> {
+    let baseSlug = slugify(content.substring(0, 50), {
+      lower: true,
+      strict: true,
+    });
+
+    if (!baseSlug) baseSlug = `post-${Date.now()}`;
+
     let slug = baseSlug;
     let counter = 1;
 
@@ -41,23 +47,20 @@ export class PostsService {
     return slug;
   }
 
-  async create(data: CreatePostDto, file: Express.Multer.File, userId: string) {
-    const slug = await this.generateUniqueSlug(data.title);
+  async create(data: CreatePostDto, file: Express.Multer.File | undefined, userId: string) {
+    const slug = data.slug || (await this.generateUniqueSlug(data.content));
     let coverImageUrl = data.coverImage;
 
     if (file) {
-      const uploadRes = await this.cloudinary.uploadFile(
-        file,
-        'portfolio/blog',
-      );
+      const uploadRes = await this.cloudinary.uploadFile(file, 'portfolio/blog');
       coverImageUrl = uploadRes.secure_url;
     }
 
     return this.prisma.post.create({
       data: {
         ...data,
-        coverImage: coverImageUrl,
         slug,
+        coverImage: coverImageUrl,
         author: { connect: { id: userId } },
       },
     });
@@ -84,10 +87,7 @@ export class PostsService {
     if (category) andConditions.push({ category });
     if (search) {
       andConditions.push({
-        OR: [
-          { title: { contains: search, mode: 'insensitive' } },
-          { content: { contains: search, mode: 'insensitive' } },
-        ],
+        content: { contains: search, mode: 'insensitive' },
       });
     }
 
@@ -119,7 +119,6 @@ export class PostsService {
             id: true,
             name: true,
             email: true,
-            title: true,
             profileImage: true,
           },
         },
@@ -129,31 +128,22 @@ export class PostsService {
     return post;
   }
 
-  async update(
-    id: string,
-    updateData: UpdatePostDto,
-    file?: Express.Multer.File,
-  ) {
+  async update(id: string, updateData: UpdatePostDto, file?: Express.Multer.File) {
     const existingPost = await this.prisma.post.findUnique({ where: { id } });
     if (!existingPost) throw new NotFoundException('Post not found');
 
     let coverImageUrl = existingPost.coverImage;
-
     if (file) {
-      if (existingPost.coverImage) {
-        await this.deleteCloudinaryFile(existingPost.coverImage);
-      }
-
-      const uploadRes = await this.cloudinary.uploadFile(
-        file,
-        'portfolio/blog',
-      );
+      if (existingPost.coverImage) await this.deleteCloudinaryFile(existingPost.coverImage);
+      const uploadRes = await this.cloudinary.uploadFile(file, 'portfolio/blog');
       coverImageUrl = uploadRes.secure_url;
     }
 
     let newSlug = existingPost.slug;
-    if (updateData.title && updateData.title !== existingPost.title) {
-      newSlug = await this.generateUniqueSlug(updateData.title);
+    if (updateData.slug) {
+      newSlug = updateData.slug;
+    } else if (updateData.content && updateData.content !== existingPost.content) {
+      newSlug = await this.generateUniqueSlug(updateData.content);
     }
 
     return this.prisma.post.update({
@@ -162,7 +152,6 @@ export class PostsService {
         ...updateData,
         coverImage: coverImageUrl,
         slug: newSlug,
-        tags: updateData.tags || existingPost.tags,
       },
     });
   }

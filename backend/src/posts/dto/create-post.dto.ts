@@ -12,14 +12,6 @@ import { Category } from '@prisma/client';
 
 export class CreatePostDto {
   @ApiProperty({
-    example: 'Mastering NestJS Microservices',
-    description: 'The catchy title for your blog post',
-  })
-  @IsString()
-  @IsNotEmpty()
-  title: string;
-
-  @ApiProperty({
     example:
       'In this post, we will explore how to build scalable microservices...',
     description: 'The main body of the post (supports Markdown text)',
