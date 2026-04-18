@@ -31,8 +31,9 @@ export class CreatePostDto {
   @ApiProperty({
     example: 'https://your-storage.com/images/nest-cover.jpg',
     required: false,
+    type: 'string',
+    format: 'binary',
   })
-  @IsString()
   @IsOptional()
   coverImage?: string;
 

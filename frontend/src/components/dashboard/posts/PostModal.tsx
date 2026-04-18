@@ -46,6 +46,20 @@ export const PostModal = React.memo(
       },
     });
 
+    // Reset form when selectedPost changes
+    React.useEffect(() => {
+      if (selectedPost && isOpen) {
+        reset({
+          content: selectedPost.content || "",
+          category: selectedPost.category || "Backend",
+          isPublished: selectedPost.published || true,
+          tags: selectedPost.tags || [],
+        });
+        setPreview(selectedPost.coverImage || null);
+        setFile(null);
+      }
+    }, [selectedPost, isOpen, reset]);
+
     const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       const selected = e.target.files?.[0];
       if (selected) {
